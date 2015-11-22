@@ -1,0 +1,42 @@
+#map-3x2{
+    width: 126vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-3x2{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 50%;
+    width: 33.33%;
+    float: left;
+}
+
+#map-3x3{
+    width: 84vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-3x3{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 33.33%;
+    width: 33.33%;
+    float: left;
+}
+
+#map-4x3{
+    width: 112vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-4x3{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 33.33%;
+    width: 25%;
+    float: left;
+
+}

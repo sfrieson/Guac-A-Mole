@@ -1,0 +1,24 @@
+.split {
+    display:inline-block;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid;
+    float: left;
+}
+#map-section {
+    background-color: peachpuff;
+    height: 100%;
+    width: 126vh;
+    float: left;
+    display: inline-block;
+    background: url() green;
+}
+#score-section{
+    background-color: lightseagreen;
+    height: 100%;
+    width: 40vh;
+    float: left;
+    display: inline-block;
+}

@@ -1,0 +1,109 @@
+* {
+    box-sizing: border-box;
+}
+body{
+    background-color: linen;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+
+
+.split {
+    display:inline-block;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid;
+    float: left;
+}
+#map-section {
+    background-color: peachpuff;
+    height: 100%;
+    width: 126vh;
+    float: left;
+    display: inline-block;
+    background: url() green;
+}
+#score-section{
+    background-color: lightseagreen;
+    height: 100%;
+    width: 40vh;
+    float: left;
+    display: inline-block;
+}
+.screen-cover{
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    background-color: rgba(240, 240, 240, 1);
+    margin:0;
+    position:fixed;
+    top: 0;
+    left: 0;
+}
+
+.pop-up{
+    width: inherit;
+    height: 84vh;
+    z-index: 98;
+    background-color: rgba(255, 255, 255, .95);
+    margin:0;
+    position: fixed;
+}
+#map-3x2{
+    width: 126vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-3x2{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 50%;
+    width: 33.33%;
+    float: left;
+}
+
+#map-3x3{
+    width: 84vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-3x3{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 33.33%;
+    width: 33.33%;
+    float: left;
+}
+
+#map-4x3{
+    width: 112vh;
+    height: 84vh;
+    margin:auto;
+}
+.grid-4x3{
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid;
+    height: 33.33%;
+    width: 25%;
+    float: left;
+
+}
+#wrapper {
+    height: 84vh;
+    margin: 8vh auto;
+    position:relative;
+}
+
+h1 {
+    font-size: 10vh;
+    font-family: "Permanent Marker";
+}

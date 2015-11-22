@@ -1,0 +1,19 @@
+.screen-cover{
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    background-color: rgba(240, 240, 240, 1);
+    margin:0;
+    position:fixed;
+    top: 0;
+    left: 0;
+}
+
+.pop-up{
+    width: inherit;
+    height: 84vh;
+    z-index: 98;
+    background-color: rgba(255, 255, 255, .95)
+    margin:0;
+    position: fixed;
+}
