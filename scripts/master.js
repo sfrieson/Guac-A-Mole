@@ -60,12 +60,27 @@ Game.prototype = {
 	
 	//Sets a cell to be active for hit for limited time
 	showHit: function () {
-		var randCell = parseInt(Math.random() * levelData[this.level].pieces, 10);//select random cell from possible number
+		var scope = this;
+		var randCell = parseInt(Math.random() * levelData[scope.level].pieces, 10);//select random cell from possible number
 		console.log(randCell);
 		randCell = $('[data-position=' + randCell + ']');
 		randCell.addClass('red-bg');
 		setTimeout(function () {
 			randCell.removeClass('red-bg');
+		}, 2000);
+		clearInterval();
+	
+	},
+	start: function () {
+		var hit = 0;
+		var scope = this;
+		var interval = setInterval(function () {
+			scope.showHit();
+			
+			if (hit == 5) {//not working yet
+				window.clearInterval(hit);
+			}
+			hit++;
 		}, 1000);
 	}
 };
