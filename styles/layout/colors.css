@@ -1,0 +1,33 @@
+/*text colors*/
+.red {
+	color: #d92332;
+}
+.green {
+	color: #618c42;
+}
+.yellow {
+	color: #f2bb13;
+}
+.orange {
+	color: #f28322;
+}
+.dorange {
+	color: #f25d27;
+}
+
+/*background colors*/
+.red-bg {
+	background-color: #d92332;
+}
+.green-bg {
+	background-color: #618c42;
+}
+.yellow-bg {
+	background-color: #f2bb13;
+}
+.orange-bg {
+	background-color: #f28322;
+}
+.dorange-bg {
+	background-color: #f25d27;
+}

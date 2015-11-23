@@ -1,9 +1,10 @@
 * {
     box-sizing: border-box;
+	
 }
 body{
     background-color: linen;
-    margin: 0;
+	margin: 0;
     padding: 0;
 }
 
@@ -27,10 +28,9 @@ body{
     width: 126vh;
     float: left;
     display: inline-block;
-    background: url() green;
+    background: url() #618c42; 
 }
 #score-section{
-    background-color: lightseagreen;
     height: 100%;
     width: 40vh;
     float: left;
@@ -54,6 +54,7 @@ body{
     background-color: rgba(255, 255, 255, .95);
     margin:0;
     position: fixed;
+	padding: 0;
 }
 #map-3x2{
     width: 126vh;
@@ -97,10 +98,18 @@ body{
     float: left;
 
 }
-#wrapper {
+#container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+	text-align: center;
+}
+#game {
     height: 84vh;
-    margin: 8vh auto;
+	margin-top: 8vh;
+    display: inline-block;
     position:relative;
+	text-align: left
 }
 
 h1 {
