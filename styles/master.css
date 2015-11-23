@@ -99,11 +99,16 @@ h2 {
 }
 
 .title {
-	text-shadow: 5px 5px 5px 0 black;
-	text-decoration: line-through;
-	white-space: nowrap;
+	
 }
-/*grid*/
+
+.title h1{
+	text-shadow: 5px 5px 0 #f25d27;
+	white-space: nowrap;
+	transform: rotate(-15deg);
+	font-size: 18vh;
+	margin-top: 32vh;
+}/*grid*/
 #map-3x2{
     width: 126vh;
     height: 84vh;
