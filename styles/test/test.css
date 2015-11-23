@@ -1,35 +1,3 @@
-/*------------Master CSS settings--------------*/
-/*from the style directory bash cat pieces/* > master.css to update*/
-
-
-/*Reset*/
-* {
-    box-sizing: border-box;
-	
-}
-body{
-    background-color: linen;
-	margin: 0;
-    padding: 0;
-	font-family: Helvetica;
-}
-
-
-/*High level IDs*/
-#container {
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-	text-align: center;
-}
-#game {
-    height: 84vh;
-	margin-top: 8vh;
-    display: inline-block;
-    position:relative;
-	text-align: left
-}
-
 /*alerts*/
 .full-screen{
     width: 100vw;
@@ -164,7 +132,7 @@ h2 {
     box-sizing: border-box;
     border: 1px solid;
 }
-#map {
+#map-section {
     background-color: peachpuff;
     height: 100%;
     width: 126vh;
@@ -172,7 +140,7 @@ h2 {
     display: inline-block;
     background: url() green;
 }
-#scoreboard{
+#score-section{
     background-color: lightseagreen;
     height: 100%;
     width: 40vh;

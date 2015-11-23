@@ -1,3 +1,4 @@
+/*screen layouts*/
 .h-split {
     display:inline-block;
     position: relative;
@@ -15,7 +16,7 @@
     box-sizing: border-box;
     border: 1px solid;
 }
-#map-section {
+#map {
     background-color: peachpuff;
     height: 100%;
     width: 126vh;
@@ -23,7 +24,7 @@
     display: inline-block;
     background: url() green;
 }
-#score-section{
+#scoreboard{
     background-color: lightseagreen;
     height: 100%;
     width: 40vh;

@@ -1,0 +1,32 @@
+/*------------Master CSS settings--------------*/
+/*from the style directory bash cat pieces/* > master.css to update*/
+
+
+/*Reset*/
+* {
+    box-sizing: border-box;
+	
+}
+body{
+    background-color: linen;
+	margin: 0;
+    padding: 0;
+	font-family: Helvetica;
+}
+
+
+/*High level IDs*/
+#container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+	text-align: center;
+}
+#game {
+    height: 84vh;
+	margin-top: 8vh;
+    display: inline-block;
+    position:relative;
+	text-align: left
+}
+

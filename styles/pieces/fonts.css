@@ -7,20 +7,12 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
     font-size: 10vh;
 }
-
 h2 {
 	font-size: 8vh;
 }
 
-
-.title{
-	text-align: center;
-}
-.title > h1 {
-	text-shadow: 5px 5px 0px #f25d27;
+.title {
+	text-shadow: 5px 5px 5px 0 black;
+	text-decoration: line-through;
 	white-space: nowrap;
-	display: inline-block;
-	margin: 35vh auto;
-	transform: rotate(-18deg);
-	font-size: 15vh;
 }
