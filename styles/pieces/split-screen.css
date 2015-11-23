@@ -1,4 +1,4 @@
-.split {
+.h-split {
     display:inline-block;
     position: relative;
     width: 50%;
@@ -6,6 +6,14 @@
     box-sizing: border-box;
     border: 1px solid;
     float: left;
+}
+.v-split {
+    display:block;
+    position: relative;
+    width: 100%;
+    height: 50%;
+    box-sizing: border-box;
+    border: 1px solid;
 }
 #map-section {
     background-color: peachpuff;

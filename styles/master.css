@@ -12,8 +12,8 @@ body{
 
 
 
-
-.split {
+/*split-screen*/
+.h-split {
     display:inline-block;
     position: relative;
     width: 50%;
@@ -22,21 +22,34 @@ body{
     border: 1px solid;
     float: left;
 }
+.v-split {
+    display:block;
+    position: relative;
+    width: 100%;
+    height: 50%;
+    box-sizing: border-box;
+    border: 1px solid;
+}
 #map-section {
     background-color: peachpuff;
     height: 100%;
     width: 126vh;
     float: left;
     display: inline-block;
-    background: url() #618c42; 
+    background: url() green;
 }
 #score-section{
+    background-color: lightseagreen;
     height: 100%;
     width: 40vh;
     float: left;
     display: inline-block;
 }
-.screen-cover{
+
+
+
+/*alerts*/
+.full-screen{
     width: 100vw;
     height: 100vh;
     z-index: 99;
@@ -56,6 +69,9 @@ body{
     position: fixed;
 	padding: 0;
 }
+
+
+/*grids*/
 #map-3x2{
     width: 126vh;
     height: 84vh;
@@ -98,6 +114,8 @@ body{
     float: left;
 
 }
+
+
 #container {
     position: relative;
     height: 100vh;
@@ -114,5 +132,42 @@ body{
 
 h1 {
     font-size: 10vh;
-    font-family: "Permanent Marker";
+    font-family: "Permanent Marker", cursive;
+}
+
+
+/*Reference*/
+
+/*text colors*/
+.red {
+	color: #d92332;
+}
+.green {
+	color: #618c42;
+}
+.yellow {
+	color: #f2bb13;
+}
+.orange {
+	color: #f28322;
+}
+.dorange {
+	color: #f25d27;
+}
+
+/*background colors*/
+.red-bg {
+	background-color: #d92332;
+}
+.green-bg {
+	background-color: #618c42;
+}
+.yellow-bg {
+	background-color: #f2bb13;
+}
+.orange-bg {
+	background-color: #f28322;
+}
+.dorange-bg {
+	background-color: #f25d27;
 }

@@ -1,0 +1,26 @@
+/*<link href='https://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>*/
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Permanent Marker", cursive;
+}
+
+h1 {
+    font-size: 10vh;
+}
+
+h2 {
+	font-size: 8vh;
+}
+
+
+.title{
+	text-align: center;
+}
+.title > h1 {
+	text-shadow: 5px 5px 0px #f25d27;
+	white-space: nowrap;
+	display: inline-block;
+	margin: 35vh auto;
+	transform: rotate(-18deg);
+	font-size: 15vh;
+}
