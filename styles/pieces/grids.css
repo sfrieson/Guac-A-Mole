@@ -1,10 +1,10 @@
 /*grid*/
-#map-3x2{
+#grid-3x2{
     width: 126vh;
     height: 84vh;
     margin:auto;
 }
-.grid-3x2{
+.cell-3x2{
     margin: 0;
     box-sizing: border-box;
     border: 1px solid;
@@ -13,12 +13,12 @@
     float: left;
 }
 
-#map-3x3{
+#grid-3x3{
     width: 84vh;
     height: 84vh;
     margin:auto;
 }
-.grid-3x3{
+.cell-3x3{
     margin: 0;
     box-sizing: border-box;
     border: 1px solid;
@@ -27,12 +27,12 @@
     float: left;
 }
 
-#map-4x3{
+#grid-4x3{
     width: 112vh;
     height: 84vh;
     margin:auto;
 }
-.grid-4x3{
+.cell-4x3{
     margin: 0;
     box-sizing: border-box;
     border: 1px solid;
