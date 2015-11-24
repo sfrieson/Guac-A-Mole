@@ -45,8 +45,7 @@ Game.prototype = {
 			i;
 		
 		for (i = 0; i < levelData[level].pieces; i++) { //loops for the number of pieces for the level
-			piece = $('<div>').attr('class', 'cell-' + levelData[level].grid); //sets pieces' class
-			piece.attr('data-position', position); //set a position for each cell to for setting hit-pieces later
+			piece = $('<div>').attr('class', 'passive cell-' + levelData[level].grid); //sets pieces' class
 			grid.append(piece); //adds piece to the grid
 			position++;
 		}
@@ -59,14 +58,16 @@ Game.prototype = {
 	},
 	
 	//Sets a cell to be active for hit for limited time
-	showHit: function () {
+	showHitPiece: function () {
 		var scope = this;
-		var randCell = parseInt(Math.random() * levelData[scope.level].pieces, 10);//select random cell from possible number
-		console.log(randCell);
-		randCell = $('[data-position=' + randCell + ']');
-		randCell.addClass('red-bg');
+		var $passiveCells = $('.passive');
+		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
+		randCell = $passiveCells.eq(randCell);
+		randCell.removeClass('passive'); //Change statue of cell to active.
+		randCell.addClass('active red-bg');
 		setTimeout(function () {
-			randCell.removeClass('red-bg');
+			randCell.removeClass('active red-bg');
+			randCell.addClass('passive');
 		}, 2000);
 		clearInterval();
 	
@@ -75,10 +76,10 @@ Game.prototype = {
 		var hit = 0;
 		var scope = this;
 		var interval = setInterval(function () {
-			scope.showHit();
-			
-			if (hit == 5) {//not working yet
-				window.clearInterval(hit);
+			scope.showHitPiece();
+			console.log(hit);
+			if (hit === 5) {//not working yet
+				clearInterval(interval);
 			}
 			hit++;
 		}, 1000);
