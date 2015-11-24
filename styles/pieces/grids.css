@@ -2,8 +2,7 @@
 #grid-3x2{
     width: 126vh;
     height: 100%;
-/*    margin:auto;*/
-	margin:0;
+	margin:auto;
 	padding: 0;
 }
 .cell-3x2{

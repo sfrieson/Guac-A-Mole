@@ -96,8 +96,7 @@ h2 {
 #grid-3x2{
     width: 126vh;
     height: 100%;
-/*    margin:auto;*/
-	margin:0;
+	margin:auto;
 	padding: 0;
 }
 .cell-3x2{
@@ -135,19 +134,36 @@ h2 {
 }
 /*screen divisions*/
 
-#container {
+#container { /*Largest containter*/
     position: relative;
     height: 100vh;
     width: 100vw;
 	text-align: center;
 }
-#game {
+#game { /*holds all the components for the game*/
     height: 84vh;
 	width: 166vh; /*Scoreboard width + map width*/
 	margin-top: 8vh;
     display: inline-block;
     position: relative;
 	text-align: left;
+}
+
+#scoreboard{ /*Holds the scoreboard on the left side*/
+    background-color: lightseagreen;
+    height: 100%;
+    width: 40vh;
+    float: left;
+    display: inline-block;
+	background-color: pink;
+}
+
+#map { /*Holds the map where play happens on the right side*/
+    background-color: peachpuff;
+    height: 100%;
+    width: 126vh;
+    float: left;
+    display: inline-block;
 }
 
 .h-split {
@@ -164,21 +180,4 @@ h2 {
     width: 100%;
     height: 50%;
     border: 1px solid;
-}
-#map {
-    background-color: peachpuff;
-    height: 100%;
-    width: 126vh;
-    float: left;
-    display: inline-block;
-    background: url() green;
-	position: relative;
-}
-#scoreboard{
-    background-color: lightseagreen;
-    height: 100%;
-    width: 40vh;
-    float: left;
-    display: inline-block;
-	position: relative;
 }

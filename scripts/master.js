@@ -48,6 +48,7 @@ Game.prototype = {
 	setBoard: function () {
 //		$('#game').empty();//removes last board and scoreboard if still there.
 		var level = this.level, //get the current level
+			map = $('<div id="map">'),
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
 			i;
@@ -69,8 +70,8 @@ Game.prototype = {
 				target.removeClass('active green-bg').addClass('passive');//leave color up for a moment, and then change it back and make passive again
 			}, 500);
 		});
-		
-		$('#game').append(grid); //gets grid into the game
+		map.append(grid);
+		$('#game').append(map); //gets grid into the game
 	},
 	
 	
