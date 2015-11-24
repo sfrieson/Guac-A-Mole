@@ -1,10 +1,25 @@
-/*screen layouts*/
+/*screen divisions*/
+
+#container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+	text-align: center;
+}
+#game {
+    height: 84vh;
+	width: 166vh; /*Scoreboard width + map width*/
+	margin-top: 8vh;
+    display: inline-block;
+    position: relative;
+	text-align: left;
+}
+
 .h-split {
     display:inline-block;
     position: relative;
     width: 50%;
     height: 100%;
-    box-sizing: border-box;
     border: 1px solid;
     float: left;
 }
@@ -13,7 +28,6 @@
     position: relative;
     width: 100%;
     height: 50%;
-    box-sizing: border-box;
     border: 1px solid;
 }
 #map {

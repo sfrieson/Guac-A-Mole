@@ -46,7 +46,7 @@ Game.prototype = {
 
 	//sets up the board for the beginning of a round
 	setBoard: function () {
-		$('#game').empty();//removes last board and scoreboard if still there.
+//		$('#game').empty();//removes last board and scoreboard if still there.
 		var level = this.level, //get the current level
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
@@ -84,13 +84,13 @@ Game.prototype = {
 	},
 	
 	
-	//Sets a cell to be active for hit for limited time
+	//Sets a cell to be active to hit for limited time
 	showHitPiece: function () {
 		var scope = this;
 		var $passiveCells = $('.passive');
 		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
 		randCell = $passiveCells.eq(randCell);
-		randCell.removeClass('passive').addClass('active red-bg'); //Change statue of cell to active.
+		randCell.removeClass('passive').addClass('active red-bg'); //Change state of cell to active.
 		
 		setTimeout(function () {
 			randCell.removeClass('active red-bg').addClass('passive');
@@ -104,7 +104,7 @@ Game.prototype = {
 		var scope = this;
 		var interval = setInterval(function () {
 			scope.showHitPiece();
-			if (hitPieceNumber === scope.levelData[scope.level].maxHitPieces) {//not working yet
+			if (hitPieceNumber === scope.levelData[scope.level].maxHitPieces) {
 				clearInterval(interval);
 			}
 			hitPieceNumber++;

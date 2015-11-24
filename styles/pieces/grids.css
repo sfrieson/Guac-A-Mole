@@ -1,43 +1,41 @@
 /*grid*/
 #grid-3x2{
     width: 126vh;
-    height: 84vh;
-    margin:auto;
+    height: 100%;
+/*    margin:auto;*/
+	margin:0;
+	padding: 0;
 }
 .cell-3x2{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
     height: 50%;
-    width: 33.33%;
+    width: 33.333%;
     float: left;
 }
 
 #grid-3x3{
     width: 84vh;
-    height: 84vh;
+    height: 100%;
     margin:auto;
 }
 .cell-3x3{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
-    height: 33.33%;
-    width: 33.33%;
+    height: 33.333%;
+    width: 33.333%;
     float: left;
 }
 
 #grid-4x3{
     width: 112vh;
-    height: 84vh;
+    height: 100%;
     margin:auto;
 }
 .cell-4x3{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
-    height: 33.33%;
+    height: 33.333%;
     width: 25%;
     float: left;
-
 }

@@ -14,22 +14,6 @@ body{
 	font-family: Helvetica;
 }
 
-
-/*High level IDs*/
-#container {
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-	text-align: center;
-}
-#game {
-    height: 84vh;
-	margin-top: 8vh;
-    display: inline-block;
-    position:relative;
-	text-align: left
-}
-
 /*alerts*/
 .full-screen{
     width: 100vw;
@@ -111,53 +95,66 @@ h2 {
 }/*grid*/
 #grid-3x2{
     width: 126vh;
-    height: 84vh;
-    margin:auto;
+    height: 100%;
+/*    margin:auto;*/
+	margin:0;
+	padding: 0;
 }
 .cell-3x2{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
     height: 50%;
-    width: 33.33%;
+    width: 33.333%;
     float: left;
 }
 
 #grid-3x3{
     width: 84vh;
-    height: 84vh;
+    height: 100%;
     margin:auto;
 }
 .cell-3x3{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
-    height: 33.33%;
-    width: 33.33%;
+    height: 33.333%;
+    width: 33.333%;
     float: left;
 }
 
 #grid-4x3{
     width: 112vh;
-    height: 84vh;
+    height: 100%;
     margin:auto;
 }
 .cell-4x3{
     margin: 0;
-    box-sizing: border-box;
     border: 1px solid;
-    height: 33.33%;
+    height: 33.333%;
     width: 25%;
     float: left;
-
 }
-/*screen layouts*/
+/*screen divisions*/
+
+#container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+	text-align: center;
+}
+#game {
+    height: 84vh;
+	width: 166vh; /*Scoreboard width + map width*/
+	margin-top: 8vh;
+    display: inline-block;
+    position: relative;
+	text-align: left;
+}
+
 .h-split {
     display:inline-block;
     position: relative;
     width: 50%;
     height: 100%;
-    box-sizing: border-box;
     border: 1px solid;
     float: left;
 }
@@ -166,7 +163,6 @@ h2 {
     position: relative;
     width: 100%;
     height: 50%;
-    box-sizing: border-box;
     border: 1px solid;
 }
 #map {
@@ -176,6 +172,7 @@ h2 {
     float: left;
     display: inline-block;
     background: url() green;
+	position: relative;
 }
 #scoreboard{
     background-color: lightseagreen;
@@ -183,4 +180,5 @@ h2 {
     width: 40vh;
     float: left;
     display: inline-block;
+	position: relative;
 }
