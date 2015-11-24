@@ -56,7 +56,7 @@ Game.prototype = {
 		
 		for (i = 0; i < this.levelData[level].pieces; i++) { //loops for the number of pieces for the level
 			piece = $('<div>').attr('class', 'passive cell-' + this.levelData[level].grid); //sets pieces' class
-			grid.append(piece); //adds piece to the grid
+			grid.append(piece); //adds one new piece to the grid
 		}
 		
 		grid.on('click', '.active', function (e) { //this is the Player.hit(). Move it!!!!!!!!!!!!!!!!!!!!!
@@ -68,7 +68,7 @@ Game.prototype = {
 			//make inactive again on hit
 			target.removeClass('red-bg').addClass('green-bg');//on hit change color
 			setTimeout(function () {
-				target.removeClass('active green-bg').addClass('passive');//leave color up for a moment, and then change it back and make passive again
+				target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
 			}, 500);
 		});
 		this.$map.append(grid);
@@ -91,12 +91,12 @@ Game.prototype = {
 		var scope = this;
 		var $passiveCells = $('.passive');
 		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
-		randCell = $passiveCells.eq(randCell);
-		randCell.removeClass('passive').addClass('active red-bg'); //Change state of cell to active.
+		randCell = $passiveCells.eq(randCell); //Use that random number to select the corresponding random cell.
+		randCell.removeClass('passive').addClass('active red-bg'); //Change state of cell to active for hit.
 		
-		setTimeout(function () {
+		setTimeout(function () {  //length of time cell is active before it becomes passive again
 			randCell.removeClass('active red-bg').addClass('passive');
-		}, 2000 / this.levelData[this.level].speedFactor);
+		}, 2000 / this.levelData[this.level].speedFactor); //the time is different for each level
 	},
 	
 	
@@ -104,38 +104,43 @@ Game.prototype = {
 	start: function (player) {
 		var hitPieceNumber = 0;
 		var scope = this;
+		//Add pre game count down etc...???????????????????????????
+		//Starts game action
 		var interval = setInterval(function () {
-			scope.showHitPiece();
+			scope.showHitPiece(); //each interval make another hit pieces
+			
 			if (hitPieceNumber === scope.levelData[scope.level].maxHitPieces) {
 				clearInterval(interval);
 			}
 			hitPieceNumber++;
 		}, 1000);
+		
 	},
 
 	runGame: function () {//the flow for a game
+		var level, playerCounter;
 		//initialize game
-		//[set boilerplate for game]
+		//[set boilerplate for game]!!!!!!!!!!!!!!!
 		//set Scoreboard
 		this.setScoreboard();
 		//for loop?????????????????????
-		//round one
-		this.level = 0;//Initialized above as 0;
 		
-			//player 0
-		this.currentPlayer = this.playerList[0];
 		
-				//initialize board
-		this.setBoard();
-				//start()
-		this.start();
-			//switch to player 1
-		this.currentPlayer = this.playerList[1];
-				//start()
-		this.start();
-			//switch to round 2
-		this.level++;
+		for (level = 0; level < this.levelData.length; level++) { //Level loop
+			this.level = level;//Initialized above as 0. Change above to null????????????
+			//initialize board (once a round)
+			this.setBoard(); //
 		
+			for (playerCounter = 0; playerCounter < this.playerList.length; playerCounter++) { //players take turns per round.
+				//set player (as many times as necessary per round)
+				this.currentPlayer = this.playerList[playerCounter];
+				//start() (as many times as players)
+				this.start();
+		
+				//switching players taken care of by the loop iterator
+			}
+			//changing level taken care of by the loop iterator
+		}
 		
 		
 		
@@ -149,7 +154,8 @@ Game.prototype = {
 
 
 //Player constructor function
-var Player = function (name) {
+//constructor is called by the game and takes an argument of the game to link them up
+var Player = function (game, name) {
 	this.name = name;
 	this.score = 0;
 	this.accuracy = 0;
