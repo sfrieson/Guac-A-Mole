@@ -18,12 +18,13 @@ Player
 	completion rate
 */
 
-//Data for how many pieces go on each level and how they should be styled.
-var levelData = [
-	{pieces: 6, grid: '3x2'},
-	{pieces: 9, grid: '3x3'},
-	{pieces: 12, grid: '4x3'}
-];
+
+
+
+
+
+var score = 0; //PLACEHOLDER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
 //game constructor function
@@ -36,26 +37,52 @@ var Game = function () {
 };
 
 Game.prototype = {
+	//Data for how many pieces go on each level and how they should be styled.
+	levelData: [
+		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5},
+		{pieces: 9, grid: '3x3', speedFactor: 3, maxHitPieces: 10},
+		{pieces: 12, grid: '4x3', speedFactor: 5, maxHitPieces: 15}
+	],
+
 	//sets up the board for the beginning of a round
 	setBoard: function () {
+		$('#game').empty();//removes last board and scoreboard if still there.
 		var level = this.level, //get the current level
-			grid = $('<div>').attr('id', 'grid-' + levelData[level].grid), //make the grid div with size setting in ID
-			position = 0,
+			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
 			i;
 		
-		for (i = 0; i < levelData[level].pieces; i++) { //loops for the number of pieces for the level
-			piece = $('<div>').attr('class', 'passive cell-' + levelData[level].grid); //sets pieces' class
+		for (i = 0; i < this.levelData[level].pieces; i++) { //loops for the number of pieces for the level
+			piece = $('<div>').attr('class', 'passive cell-' + this.levelData[level].grid); //sets pieces' class
 			grid.append(piece); //adds piece to the grid
-			position++;
 		}
-		$('#game').append(grid); //gets grid to the game
+		
+		grid.on('click', '.active', function (e) { //this is the Player.hit(). Move it!!!!!!!!!!!!!!!!!!!!!
+			var target = e.target;
+			target = $(target);
+			//add one to the score
+			score++;//score placeholder
+			console.log(score);
+			//make inactive again on hit
+			target.removeClass('red-bg').addClass('green-bg');//on hit change color
+			setTimeout(function () {
+				target.removeClass('active green-bg').addClass('passive');//leave color up for a moment, and then change it back and make passive again
+			}, 500);
+		});
+		
+		$('#game').append(grid); //gets grid into the game
 	},
 	
 	
 	setScoreboard: function () {
+		var level = this.level, //get the current level
+			scoreboard = $('<div>').attr('id', 'scoreboard');
+		var text = "<h2>Welcome to Level " + (level + 1) + "</h2>";
+		scoreboard.html(text);
 		
+		$('#game').append(scoreboard);
 	},
+	
 	
 	//Sets a cell to be active for hit for limited time
 	showHitPiece: function () {
@@ -63,28 +90,31 @@ Game.prototype = {
 		var $passiveCells = $('.passive');
 		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
 		randCell = $passiveCells.eq(randCell);
-		randCell.removeClass('passive'); //Change statue of cell to active.
-		randCell.addClass('active red-bg');
+		randCell.removeClass('passive').addClass('active red-bg'); //Change statue of cell to active.
+		
 		setTimeout(function () {
-			randCell.removeClass('active red-bg');
-			randCell.addClass('passive');
-		}, 2000);
-		clearInterval();
-	
+			randCell.removeClass('active red-bg').addClass('passive');
+		}, 2000 / this.levelData[this.level].speedFactor);
 	},
+	
+	
+	//Starts the round
 	start: function () {
-		var hit = 0;
+		var hitPieceNumber = 0;
 		var scope = this;
 		var interval = setInterval(function () {
 			scope.showHitPiece();
-			console.log(hit);
-			if (hit === 5) {//not working yet
+			if (hitPieceNumber === scope.levelData[scope.level].maxHitPieces) {//not working yet
 				clearInterval(interval);
 			}
-			hit++;
+			hitPieceNumber++;
 		}, 1000);
 	}
 };
+
+
+
+
 
 
 
@@ -102,9 +132,3 @@ Player.prototype = {
 
 
 var round1 = new Game();
-/*
-Act II
-	decide level
-	set board for that level
-	pop up at random interval
-*/
