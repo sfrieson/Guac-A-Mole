@@ -34,21 +34,22 @@ var Game = function () {
 	this.$scoreboard = $('<section id="score">');
 	this.$map = $('<section id="map">');
 	this.$board = $('<section>').append(this.$scoreboard).append(this.$map); //board is made up of scoreboard and map sections
+	this.playerList = []; //player list.  Linked to each player's object
+	this.currentPlayer = null; //holds the player who's currently playing
 };
 
 Game.prototype = {
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
-		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5},
-		{pieces: 9, grid: '3x3', speedFactor: 3, maxHitPieces: 10},
-		{pieces: 12, grid: '4x3', speedFactor: 5, maxHitPieces: 15}
+		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5}, //Level 1 [0]
+		{pieces: 9, grid: '3x3', speedFactor: 3, maxHitPieces: 10}, //Level 2 [1]
+		{pieces: 12, grid: '4x3', speedFactor: 5, maxHitPieces: 15} //Level 3 [2]
 	],
-
+	
 	//sets up the board for the beginning of a round
 	setBoard: function () {
-//		$('#game').empty();//removes last board and scoreboard if still there.
+		this.$map.empty(); //removes last board if still there. (it leaves the scoreboard standing)
 		var level = this.level, //get the current level
-			map = $('<div id="map">'),
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
 			i;
@@ -70,8 +71,8 @@ Game.prototype = {
 				target.removeClass('active green-bg').addClass('passive');//leave color up for a moment, and then change it back and make passive again
 			}, 500);
 		});
-		map.append(grid);
-		$('#game').append(map); //gets grid into the game
+		this.$map.append(grid);
+		$('#game').append(this.$map); //gets grid into the game
 	},
 	
 	
@@ -100,7 +101,7 @@ Game.prototype = {
 	
 	
 	//Starts the round
-	start: function () {
+	start: function (player) {
 		var hitPieceNumber = 0;
 		var scope = this;
 		var interval = setInterval(function () {
@@ -110,6 +111,34 @@ Game.prototype = {
 			}
 			hitPieceNumber++;
 		}, 1000);
+	},
+
+	runGame: function () {//the flow for a game
+		//initialize game
+		//[set boilerplate for game]
+		//set Scoreboard
+		this.setScoreboard();
+		//for loop?????????????????????
+		//round one
+		this.level = 0;//Initialized above as 0;
+		
+			//player 0
+		this.currentPlayer = this.playerList[0];
+		
+				//initialize board
+		this.setBoard();
+				//start()
+		this.start();
+			//switch to player 1
+		this.currentPlayer = this.playerList[1];
+				//start()
+		this.start();
+			//switch to round 2
+		this.level++;
+		
+		
+		
+		
 	}
 };
 
