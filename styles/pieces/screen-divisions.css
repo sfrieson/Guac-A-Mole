@@ -22,6 +22,7 @@
     float: left;
     display: inline-block;
 	background-color: pink;
+	padding: 1em;
 }
 
 #map { /*Holds the map where play happens on the right side*/

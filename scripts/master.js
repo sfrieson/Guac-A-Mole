@@ -22,11 +22,6 @@ Player
 
 
 
-
-var score = 0; //PLACEHOLDER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
 //game constructor function
 var Game = function () {
 	this.$scoreboard = $('<section id="score">');
@@ -48,8 +43,11 @@ Game.prototype = {
 	
 	//Changes the player at the beginning of end of each start of the level
 	changePlayer: function () {
+		$('.player-' + this.currentPlayer).parent().removeClass('dorange'); //Un-highlight player
 		//Tricky way to iterate through the players but only as high as the number of players there are.
 		this.currentPlayer = (this.currentPlayer + 1) % this.playerList.length;
+		$('.player-' + this.currentPlayer).parent().addClass('dorange'); //Highlight next player
+		
 		if (this.currentPlayer === 0) { //When we're back to the top of the player list...
 			return this.changeLevel(); // ...change the level and don't finish up this function and don't finish up the function.
 		}
@@ -66,6 +64,7 @@ Game.prototype = {
 			var changeToActThree;// ...move on to Act III.    //Placeholder!!!!!!!!!!!!!!!!!!
 			return console.log("Game done.");
 		}
+		$('#scoreboard-title').text("Level " + (this.currentLevel + 1));
 		console.log("Now for level " + this.currentLevel);
 		console.log("Now playing..." + this.playerList[this.currentPlayer].name); //Necessary for the first player of the round.
 		this.setBoard(); //Otherwise, swap out the grid for the new level.
@@ -97,10 +96,19 @@ Game.prototype = {
 	
 	
 	setScoreboard: function () {
-		var level = this.currentLevel, //get the current level
-			scoreboard = $('<div>').attr('id', 'scoreboard');
-		var text = "<h2>Welcome to Level " + (level + 1) + "</h2>";
-		scoreboard.html(text);
+		var i;
+		var scoreboard = $('<div>').attr('id', 'scoreboard'); //Make the div
+		var title = $('<h2>').attr('id', 'scoreboard-title').text("Level " + (this.currentLevel + 1));
+		scoreboard.append(title);
+		
+		for (i = 0; i < this.playerList.length; i++) {
+			var holder = $('<div>');
+			var playerName = $('<h3>').text(this.playerList[i].name);
+			var score = $('<div>').attr('class', 'score player-' + this.playerList[i].id).text(0);
+			holder.append(playerName).append(score);
+			scoreboard.append(holder);
+		}
+		
 		
 		$('#game').append(scoreboard);
 		console.log("Scoreboard loaded.");
@@ -150,7 +158,7 @@ Game.prototype = {
 	},
 
 	run: function () {//The flow for a game.  Called once per game.
-		//Initialize document.body
+		//Initialize document.body This all only happens once.
 		$('body').empty(); //empty for replay.
 		var container = $('<div id="container">'),
 			game = $('<div id="game">');
@@ -158,12 +166,11 @@ Game.prototype = {
 		$('body').append(container);
 		
 		this.getPlayers(); //get the players for this game.
-		//set Scoreboard
-		this.setScoreboard();
-		//set board
-		this.setBoard();
-		//for loop?????????????????????
-		this.start();
+		this.setScoreboard();//Set scoreboard
+		$('.player-' + this.currentPlayer).parent().addClass('dorange');
+		this.setBoard();//Set playing board
+		
+		this.start();//Game flow loop
 
 	}
 };
@@ -175,6 +182,7 @@ Game.prototype = {
 var Player = function (game, name) {//game is scope of the currently played game.
 	this.game = game; //sets game argument as variable to use in prototype
 	this.name = name;
+	this.id = this.game.playerList.length; //For if multiple players with same name
 	this.score = 0;
 	this.swings = 0;
 	this.hits = 0;
@@ -193,6 +201,7 @@ Player.prototype = {
 		if (target.hasClass('active')) {// If the swing was a hit...
 			this.hits++;
 			this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
+			$('.player-' + this.id).text(this.score);
 			console.log(this.score);
 				//Make inactive for multiple hits, and allow hit styling
 			target.removeClass('red-bg active').addClass('green-bg hit');
@@ -221,9 +230,14 @@ Player.prototype = {
 
 //Create players
 Game.prototype.getPlayers = function () {
-	var name = prompt("What is player 1's name?");
-	var player = new Player(this, name);
-	this.playerList.push(player);
+	var i = 0,
+		numOfPlayers = prompt("How many players? (max 4)") || 1; //Default 1 player.
+		
+	for (i = 0; i < numOfPlayers; i++) {
+		var name = prompt("What is player 1's name?") || "Player " + (i + 1); //Default name "Player [id]" if not set.
+		var player = new Player(this, name);
+		this.playerList.push(player);
+	}
 };
 
 

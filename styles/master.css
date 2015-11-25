@@ -70,16 +70,24 @@ body{
 .dorange-bg {
 	background-color: #f25d27;
 }/*<link href='https://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>*/
+body {
+	font-size: 5vh;
+}
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: "Permanent Marker", cursive;
+	text-align: center;
 }
 
 h1 {
-    font-size: 10vh;
+/*    font-size: 10vh;*/
 }
 h2 {
-	font-size: 8vh;
+/*	font-size: 8vh;*/
+}
+h3 {
+/*	font-size: 6vh;*/
+	margin-bottom: 0;
 }
 
 .title {
@@ -92,7 +100,25 @@ h2 {
 	transform: rotate(-15deg);
 	font-size: 18vh;
 	margin-top: 32vh;
-}/*grid*/
+}
+
+#scoreboard-title {
+	margin-top: 0;
+}
+
+.score {
+	font-family: monospace;
+	font-size: .8em;
+	text-align: center;
+	border-bottom: 2px solid rgba(0, 0, 0, .3);
+	margin-bottom: 0;
+}
+
+.score:before {
+	content: "Score: ";
+	
+}
+/*grid*/
 #grid-3x2{
     width: 126vh;
     height: 100%;
@@ -156,6 +182,7 @@ h2 {
     float: left;
     display: inline-block;
 	background-color: pink;
+	padding: 1em;
 }
 
 #map { /*Holds the map where play happens on the right side*/
