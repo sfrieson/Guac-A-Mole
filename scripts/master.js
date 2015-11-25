@@ -86,9 +86,9 @@ Game.prototype = {
 			grid.append(piece); //Adds one new piece to the grid
 		}
 		
-		grid.on('click', '.active', function (e) { //When an active cell is clicked
-			//Call the Player's hit function sending the hit target as an argument
-			scope.playerList[scope.currentPlayer].hit(e.target);
+		$('#game').on('click', function (e) { //When an active cell is clicked
+			//Call the Player's swing function sending what was hit as an argument
+			scope.playerList[scope.currentPlayer].swing(e.target);
 		});
 		this.$map.append(grid);
 		$('#game').append(this.$map); //gets grid into the game
@@ -148,9 +148,12 @@ Game.prototype = {
 	},
 
 	runGame: function () {//The flow for a game.  Called once per game.
-//		var level, playerCounter;
-		//initialize game
-		//[set boilerplate for game]!!!!!!!!!!!!!!!
+		//Initialize document.body
+		$('body').empty(); //empty for replay.
+		var container = $('<div id="container">'),
+			game = $('<div id="game">');
+		container.append(game);
+		$('body').append(container);
 		
 		this.getPlayers(); //get the players for this game.
 		//set Scoreboard
@@ -172,30 +175,50 @@ var Player = function (game, name) {//game is scope of the currently played game
 	this.game = game; //sets game argument as variable to use in prototype
 	this.name = name;
 	this.score = 0;
-	this.accuracy = 0;
-	this.completion = 0;
+	this.swings = 0;
+	this.hits = 0;
+	this.accuracy = this.getAccuracy;
+	this.completion = this.getCompletion;
 };
 
 Player.prototype = {
-	
-	//was originally on the Game.prototype
-	hit: function (target) {
+	//Functionality when there is a sing.
+	swing: function (target) {
 		var game = this.game;
 		target = $(target);
-			
-		this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
-		console.log(this.score);
-			//Make inactive for multiple hits, and allow hit styling
-		target.removeClass('red-bg active').addClass('green-bg hit');
-			//after a half second reset defaults
-		setTimeout(function () {
-			target.removeClass('green-bg hit').addClass('passive');//change color for a moment, and then make cell passive again
-		}, 500);
 		
+		this.swings++; //Log every swing.
+		
+		if (target.hasClass('active')) {// If the swing was a hit...
+			this.hits++;
+			this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
+			console.log(this.score);
+				//Make inactive for multiple hits, and allow hit styling
+			target.removeClass('red-bg active').addClass('green-bg hit');
+				//After a half second reset defaults
+			setTimeout(function () {
+				target.removeClass('green-bg hit').addClass('passive');//Change color for a moment, and then make cell passive again
+			}, 500);
+		}
+		
+	},
+	getAccuracy: function () {
+		return this.hits / this.swings;
+	},
+	
+	getCompletion: function () {
+		//get max number of possible hits
+		var maxPossible = 0;
+		this.game.levelData.forEach(function (currentObject) { //levelData is an array of objects
+			console.log(currentObject);
+			maxPossible += currentObject.maxHitPieces;
+		});
+		
+		return this.hits / maxPossible;
 	}
 };
 
-//create players
+//Create players
 Game.prototype.getPlayers = function () {
 	var name = prompt("What is player 1's name?");
 	var player = new Player(this, name);
