@@ -41,9 +41,9 @@ Game.prototype = {
 	//-------------NOTE: Player creation Game.prototype.getPlayers() below the Player construtor function
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
-		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5, pointValue: 1}, //Level 1 [0]
-		{pieces: 9, grid: '3x3', speedFactor: 3, maxHitPieces: 10, pointValue: 5}, //Level 2 [1]
-		{pieces: 12, grid: '4x3', speedFactor: 4, maxHitPieces: 15, pointValue: 10} //Level 3 [2]
+		{pieces: 6, grid: '3x2', speedFactor: 1000, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1 [0]
+		{pieces: 9, grid: '3x3', speedFactor: 500, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2 [1]
+		{pieces: 12, grid: '4x3', speedFactor: 300, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3 [2]
 	],
 	
 	//Changes the player at the beginning of end of each start of the level
@@ -112,12 +112,13 @@ Game.prototype = {
 		var scope = this;
 		var $passiveCells = $('.passive');
 		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
+		var showLength = this.levelData[this.currentLevel].showLength; //grabs the showLength for this level.
 		randCell = $passiveCells.eq(randCell); //Use that random number to select the corresponding random cell.
 		randCell.removeClass('passive').addClass('active red-bg'); //Change state of cell to active for hit.
 		
 		setTimeout(function () {  //length of time cell is active before it becomes passive again
 			randCell.removeClass('active red-bg').addClass('passive');
-		}, 2000 / this.levelData[this.currentLevel].speedFactor); //the time is different for each level
+		}, showLength); //the time is different for each level
 	},
 	
 	
@@ -125,7 +126,8 @@ Game.prototype = {
 	start: function (player) {
 		console.log("Start of round.");
 		var scope = this,
-			hitPiecesRemaining = scope.levelData[scope.currentLevel].maxHitPieces;
+			hitPiecesRemaining = scope.levelData[scope.currentLevel].maxHitPieces,
+			speedFactor = this.levelData[this.currentLevel].speedFactor;
 		
 		//Add pre game count down etc...???????????????????????????
 		//Starts game action
@@ -143,11 +145,11 @@ Game.prototype = {
 			
 			scope.showHitPiece(); //Each interval makes another hit piece
 			hitPiecesRemaining--;
-		}, 1000);
+		}, speedFactor);
 		
 	},
 
-	runGame: function () {//The flow for a game.  Called once per game.
+	run: function () {//The flow for a game.  Called once per game.
 		//Initialize document.body
 		$('body').empty(); //empty for replay.
 		var container = $('<div id="container">'),
@@ -165,7 +167,6 @@ Game.prototype = {
 
 	}
 };
-
 
 
 
@@ -228,3 +229,4 @@ Game.prototype.getPlayers = function () {
 
 
 var game = new Game();
+game.run();
