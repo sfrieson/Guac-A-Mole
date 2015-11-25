@@ -29,17 +29,16 @@ var score = 0; //PLACEHOLDER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //game constructor function
 var Game = function () {
-	this.level = 0;
-	this.activePlayer = null;
 	this.$scoreboard = $('<section id="score">');
 	this.$map = $('<section id="map">');
 	this.$board = $('<section>').append(this.$scoreboard).append(this.$map); //board is made up of scoreboard and map sections
-	this.playerList = []; //player list.  Linked to each player's object
-	this.currentPlayer = null; //holds the player who's currently playing
+	this.playerList = []; //Player list.  Linked to each player's object
+	this.currentPlayer = 0; //Holds the index for playerList for the player who's currently playing. Initialized for first player
+	this.currentLevel = 0; //Holds the index of levelData for the current level being played.  Initialized for first level
 };
 
 Game.prototype = {
-	//-------------NOTE: Player creation prototype below the Player construtor function
+	//-------------NOTE: Player creation Game.prototype.getPlayers() below the Player construtor function
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
 		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5}, //Level 1 [0]
@@ -47,33 +46,23 @@ Game.prototype = {
 		{pieces: 12, grid: '4x3', speedFactor: 5, maxHitPieces: 15} //Level 3 [2]
 	],
 	
-	//sets up the board for the beginning of a round
+	//Sets up the board for the beginning of a round
 	setBoard: function () {
-		this.$map.empty(); //removes last board if still there. (it leaves the scoreboard standing)
+		this.$map.empty(); //Removes last board if still there. (it leaves the scoreboard standing)
 		var scope = this,
-			level = this.level, //get the current level
+			level = this.currentLevel, //get the current level
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
 			i;
 		
-		for (i = 0; i < this.levelData[level].pieces; i++) { //loops for the number of pieces for the level
+		for (i = 0; i < this.levelData[level].pieces; i++) { //Loops for the number of pieces for the level
 			piece = $('<div>').attr('class', 'passive cell-' + this.levelData[level].grid); //sets pieces' class
-			grid.append(piece); //adds one new piece to the grid
+			grid.append(piece); //Adds one new piece to the grid
 		}
 		
-		grid.on('click', '.active', function (e) { //this is the Player.hit(). Move it!!!!!!!!!!!!!!!!!!!!!
-			var target = e.target;
-			target = $(target);
-			//add one to the score
-			score++;//score placeholder
-			console.log(score);
-			//make inactive again on hit
-			target.removeClass('red-bg').addClass('green-bg');//on hit change color
-//			setTimeout(function () {
-//				target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
-//			}, 500);
-			
-			setTimeout(function () { scope.currentPlayer.hit(target); }, 500);
+		grid.on('click', '.active', function (e) { //When an active cell is clicked
+			//Call the Player's hit function sending the hit target as an argument
+			scope.playerList[scope.currentPlayer].hit(e.target);
 		});
 		this.$map.append(grid);
 		$('#game').append(this.$map); //gets grid into the game
@@ -81,7 +70,7 @@ Game.prototype = {
 	
 	
 	setScoreboard: function () {
-		var level = this.level, //get the current level
+		var level = this.currentLevel, //get the current level
 			scoreboard = $('<div>').attr('id', 'scoreboard');
 		var text = "<h2>Welcome to Level " + (level + 1) + "</h2>";
 		scoreboard.html(text);
@@ -100,7 +89,7 @@ Game.prototype = {
 		
 		setTimeout(function () {  //length of time cell is active before it becomes passive again
 			randCell.removeClass('active red-bg').addClass('passive');
-		}, 2000 / this.levelData[this.level].speedFactor); //the time is different for each level
+		}, 2000 / this.levelData[this.currentLevel].speedFactor); //the time is different for each level
 	},
 	
 	
@@ -113,7 +102,7 @@ Game.prototype = {
 		var interval = setInterval(function () {
 			scope.showHitPiece(); //each interval make another hit pieces
 			
-			if (hitPieceNumber === scope.levelData[scope.level].maxHitPieces) {
+			if (hitPieceNumber === scope.levelData[scope.currentLevel].maxHitPieces) {
 				clearInterval(interval);
 			}
 			hitPieceNumber++;
@@ -131,11 +120,11 @@ Game.prototype = {
 		
 		
 		for (level = 0; level < this.levelData.length; level++) { //Level loop
-			this.level = level;//Initialized above as 0. Change above to null????????????
-			console.log("Level: " + this.level);
+			this.currentLevel = level;//Initialized above as 0. Change above to null????????????
+			console.log("Level: " + this.currentLevel);
 			//initialize board (once a round)
 			this.setBoard(); //
-			console.log("Set board for level " + this.level);
+			console.log("Set board for level " + this.currentLevel);
 			for (playerCounter = 0; playerCounter < this.playerList.length; playerCounter++) { //players take turns per round.
 				//set player (as many times as necessary per round)
 				this.currentPlayer = this.playerList[playerCounter];
@@ -172,15 +161,23 @@ Player.prototype = {
 	
 	//was originally on the Game.prototype
 	hit: function (target) {
-		target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
-		this.score++;
+		target = $(target);
+			
+		this.score++; //add one to the score
+		console.log(this.score);
+			//Make inactive for multiple hits, and allow hit styling
+		target.removeClass('red-bg active').addClass('green-bg hit');
+			//after a half second reset defaults
+		setTimeout(function () {
+			target.removeClass('green-bg hit').addClass('passive');//change color for a moment, and then make cell passive again
+		}, 500);
 		
 	}
 };
 
 //create players
 Game.prototype.getPlayers = function () {
-	var name = prompt("What is player 1\'s name?");
+	var name = prompt("What is player 1's name?");
 	var player = new Player(this, name);
 	this.playerList.push(player);
 }
