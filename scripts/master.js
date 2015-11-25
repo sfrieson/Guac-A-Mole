@@ -1,4 +1,4 @@
-/*global $, console, alert, document, window*/
+/*global $, console, alert, prompt, document, window*/
 'use strict';
 /*
 Game
@@ -39,6 +39,7 @@ var Game = function () {
 };
 
 Game.prototype = {
+	//-------------NOTE: Player creation prototype below the Player construtor function
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
 		{pieces: 6, grid: '3x2', speedFactor: 1, maxHitPieces: 5}, //Level 1 [0]
@@ -49,7 +50,8 @@ Game.prototype = {
 	//sets up the board for the beginning of a round
 	setBoard: function () {
 		this.$map.empty(); //removes last board if still there. (it leaves the scoreboard standing)
-		var level = this.level, //get the current level
+		var scope = this,
+			level = this.level, //get the current level
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
 			piece,
 			i;
@@ -67,9 +69,11 @@ Game.prototype = {
 			console.log(score);
 			//make inactive again on hit
 			target.removeClass('red-bg').addClass('green-bg');//on hit change color
-			setTimeout(function () {
-				target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
-			}, 500);
+//			setTimeout(function () {
+//				target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
+//			}, 500);
+			
+			setTimeout(function () { scope.currentPlayer.hit(target); }, 500);
 		});
 		this.$map.append(grid);
 		$('#game').append(this.$map); //gets grid into the game
@@ -128,15 +132,17 @@ Game.prototype = {
 		
 		for (level = 0; level < this.levelData.length; level++) { //Level loop
 			this.level = level;//Initialized above as 0. Change above to null????????????
+			console.log("Level: " + this.level);
 			//initialize board (once a round)
 			this.setBoard(); //
-		
+			console.log("Set board for level " + this.level);
 			for (playerCounter = 0; playerCounter < this.playerList.length; playerCounter++) { //players take turns per round.
 				//set player (as many times as necessary per round)
 				this.currentPlayer = this.playerList[playerCounter];
+				console.log("Set current player as: " + this.currentPlayer);
 				//start() (as many times as players)
 				this.start();
-		
+				console.log("Start Game");
 				//switching players taken care of by the loop iterator
 			}
 			//changing level taken care of by the loop iterator
@@ -150,12 +156,10 @@ Game.prototype = {
 
 
 
-
-
-
 //Player constructor function
 //constructor is called by the game and takes an argument of the game to link them up
-var Player = function (game, name) {
+var Player = function (game, name) {//game is scope of the currently played game.
+	this.game = game; //sets game argument as variable to use in prototype
 	this.name = name;
 	this.score = 0;
 	this.accuracy = 0;
@@ -163,8 +167,24 @@ var Player = function (game, name) {
 };
 
 Player.prototype = {
-	hit: function () {}
+	
+	gameScope: this.game,
+	
+	//was originally on the Game.prototype
+	hit: function (target) {
+		target.removeClass('active green-bg').addClass('passive');//change color for a moment, and then make cell passive again
+		this.score++;
+		
+	}
 };
 
+//create players
+Game.prototype.getPlayers = function () {
+	var name = prompt("What is player 1\'s name?");
+	var player = new Player(this, name);
+	this.playerList.push(player);
+}
 
-var round1 = new Game();
+
+
+var game = new Game();
