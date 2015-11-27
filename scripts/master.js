@@ -62,7 +62,7 @@ Game.prototype = {
 		this.currentLevel = (this.currentLevel + 1) % this.levelData.length;
 		if (this.currentLevel === 0) { //When we've gone through all the levels...
 			var changeToActThree;// ...move on to Act III.    //Placeholder!!!!!!!!!!!!!!!!!!
-			return console.log("Game done.");
+			return this.recap();
 		}
 		$('#scoreboard-title').text("Level " + (this.currentLevel + 1));
 		console.log("Now for level " + this.currentLevel);
@@ -161,8 +161,8 @@ Game.prototype = {
 		//Initialize document.body This all only happens once.
 		$('body').empty(); //Remove Act I title screens or previous game (play again).
 		var container = $('<div id="container">'),
-			game = $('<div id="game">');
-		container.append(game);
+			gameDiv = $('<div id="game">');
+		container.append(gameDiv);
 		$('body').append(container);
 		this.setScoreboard();//Set scoreboard
 		$('.player-' + this.currentPlayer).parent().addClass('dorange');
@@ -197,6 +197,24 @@ Game.prototype = {
 		}
 		
 		setTimeout(count, 1500);
+	},
+	
+	recap: function () {
+		var fullScreen = $('<div class="full-screen"').css('top', '200vh');
+		$('body').append(fullScreen);	
+		
+		fullScreen.animate({top: "0vh"}, 600);
+		//show all players and their scores
+		
+		//add all accuracy points
+		
+		//add all completeion points
+		
+		//compare totals
+		
+		//highlight winner (if more than one player)
+		
+		//as to play again.
 	}
 };
 
