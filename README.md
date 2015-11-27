@@ -36,36 +36,38 @@ var player = ['Amy', 'Grant', 'Carly', 'Simon'];
 var currentPlayer = 0;
 var level = 1;
 
-
 function nextPlayer () {
-  //Add one each time to change players,
+  //Switch to next player
   //but never go above the max number of players.
   currentPlayer = (currentPlayer + 1) % player.length;
 
   if (currentPlayer === 0) { //If we're back at the top of the list    
     return nextLevel();
   }
-  play(); //Next player plays.
+  play(); //Next player plays next round.
 }
 
 function nextLevel () {
-  level++;
+  level++; //Change Levels
   if (level > 3) {
       return console.log("Game Done");
   }
-
   play(); //Start next level
 }
 
 function play () {
+  // Code to play level goes here.
   console.log(player[currentPlayer] + " is playing level " + level);
   nextPlayer();
 }
 
-play(); //start the Game flow
+play(); //Start the Game flow
 ```
 
 - Skipped hit piece problem
 - keeping attributes where they belong. (swing function)getting it over there  and why it's important.
 - Redo CSS for game pieces with function? Explain
 - vh sizing
+- html snippets
+- css snippets
+  - bash: `cat styles/pieces/* > styles/master.css`

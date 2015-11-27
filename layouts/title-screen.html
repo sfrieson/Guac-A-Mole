@@ -6,24 +6,37 @@
 	<link rel="stylesheet" href="../styles/master.css">
 	<link rel="stylesheet" href="../styles/pieces/fonts.css">
 	<link href='https://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
+	<script src="../scripts/jquery.js"></script>
 </head>
 <body>
 
 
 
-<section id="title">
-	<div class="full-screen yellow-bg title">
+
+	<section id="title" class="full-screen yellow-bg">
 		<h1 class="green">
 		Guac-a-Mole
 		</h1>
-	</div>
-</section>
+	</section>
+
 
 <script>
+$('h1').animate(
+	//CSS properties to move toward
+	{
+		fontSize: "18vh"
+	},
+	//Duration
+	700,
+	//easing
+	'swing',
+	//On completion do this function
+	function (){}
+);
 	//animate title growing from infinity.
 </script>
-	
-	
-	
+
+
+
 </body>
 </html>
