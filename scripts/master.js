@@ -25,8 +25,8 @@ Player
 //game constructor function
 var Game = function () {
 	this.$scoreboard = $('<section id="score">');
-	this.$map = $('<section id="map">');
-	this.$board = $('<section>').append(this.$scoreboard).append(this.$map); //board is made up of scoreboard and map sections
+	this.map = $('<section id="map">');
+	this.$board = $('<section>').append(this.$scoreboard).append(this.map); //board is made up of scoreboard and map sections
 	this.playerList = []; //Player list.  Linked to each player's object
 	this.currentPlayer = 0; //Holds the index for playerList for the player who's currently playing. Initialized for first player
 	this.currentLevel = 0; //Holds the index of levelData for the current level being played.  Initialized for first level
@@ -52,7 +52,7 @@ Game.prototype = {
 			return this.changeLevel(); // ...change the level and don't finish up this function and don't finish up the function.
 		}
 		console.log("Now playing..." + this.playerList[this.currentPlayer].name);
-		this.start(); //Otherwise, start up the game for the new player.
+		this.countdown(); //Otherwise, start up the game for the new player.
 	},
 
 	//Changes the level after each player has played it
@@ -68,12 +68,12 @@ Game.prototype = {
 		console.log("Now for level " + this.currentLevel);
 		console.log("Now playing..." + this.playerList[this.currentPlayer].name); //Necessary for the first player of the round.
 		this.setBoard(); //Otherwise, swap out the grid for the new level.
-		this.start(); //Start up the next round.
+		this.countdown(); //Start up the next round.
 	},
 
 	//Sets up the board for the beginning of a round
 	setBoard: function () {
-		this.$map.empty(); //Removes last board. (it leaves the scoreboard standing)
+		this.map.empty(); //Removes last board. (it leaves the scoreboard standing)
 		var scope = this,
 			level = this.currentLevel, //get the current level
 			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
@@ -89,8 +89,8 @@ Game.prototype = {
 			//Call the Player's swing function sending what was hit as an argument
 			scope.playerList[scope.currentPlayer].swing(e.target);
 		});
-		this.$map.append(grid);
-		$('#game').append(this.$map); //gets grid into the game
+		this.map.append(grid);
+		$('#game').append(this.map); //gets grid into the game
 		console.log("Gameboard loaded.");
 	},
 
@@ -167,9 +167,36 @@ Game.prototype = {
 		this.setScoreboard();//Set scoreboard
 		$('.player-' + this.currentPlayer).parent().addClass('dorange');
 		this.setBoard();//Set playing board
+		this.countdown();
 
-		this.start();//Game flow loop
-
+	},
+	
+	countdown: function () {
+		var scope = this;
+		var popUp = $('<div class="pop-up">');
+		popUp.append("<h2>Are you ready " + this.playerList[this.currentPlayer].name + "?</h2>");
+		this.map.prepend(popUp);
+		
+		function count() {
+			
+			var number = $('<div>').css('fontSize', "10em");
+			popUp.append(number);
+			var i = 0,
+				text = ['3...', '2...', '1...', 'GO!'];
+			var counter = setInterval(function () {
+				number.text(text[i]).css('opacity', 1);
+				number.animate({opacity: 0}, 600);
+				i++;
+				if (i > 3) {
+					clearInterval(counter);
+					popUp.remove();
+					return scope.start();
+				}
+			}, 1300);
+			
+		}
+		
+		setTimeout(count, 1500);
 	}
 };
 
@@ -226,6 +253,8 @@ Player.prototype = {
 	}
 };
 
+
+
 //Create players
 //Defined after the Player constructor function to have access to it.
 Game.prototype.getPlayers = function (playerInput) {
@@ -272,7 +301,8 @@ function preGame() {
 
 function playerScreen(game) {
 	var i;
-	var makePlayers = $('<section id="make-players">').css("z-index", "-50");
+	//Set-up the page
+	var makePlayers = $('<section id="make-players">');
 	makePlayers.append('<div class="full-screen green-bg">');
 	makePlayers = makePlayers.children().eq(0);
 	makePlayers.append('<h1>How many players?</h1>');
@@ -285,11 +315,10 @@ function playerScreen(game) {
 	
 	
 	$('body').prepend(makePlayers);
-	$('#title').animate({left: "-200vw"}, 400, 'swing', function () {this.remove(); });
-	console.log("Getting Players!");
+	$('#title').animate({left: "-200vw"}, 400, 'swing', function () {this.remove(); });//Animate title off screen and remove it.
 
 	makePlayers.on('click', 'button', function (e) {
-		console.log(game);
+
 		$('h1').text("Player names:");
 		$('button').remove();
 		var form = $('<form>');
@@ -297,14 +326,14 @@ function playerScreen(game) {
 		for (i = 1; i <= e.target.innerText; i++) {
 			var formInput =
 				'<div class="player">' +
-					'<label for="Player ' + i + '">' +
-						'<h2>Player ' + i + ':</h2>' +
-					'</label>' +
-					'<input type="text">' +
+				'<label for="Player ' + i + '">' +
+				'<h2>Player ' + i + ':</h2>' +
+				'</label>' +
+				'<input type="text">' +
 				'</div>';
 			form.append(formInput);
 		}
-		form.append('<input type="submit" id="play" class="button orange-bg" value="Lets go!">');
+		form.append('<input type="submit" id="play" class="button orange-bg" value="Let\'s go!">');
 		form.submit(function (e) {
 			e.preventDefault();
 			game.getPlayers($('input'));
@@ -314,5 +343,6 @@ function playerScreen(game) {
 	
 	
 }
+
 
 preGame();
