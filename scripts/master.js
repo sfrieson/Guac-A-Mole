@@ -335,6 +335,7 @@ Game.prototype.preGame = function () {
 	//Title Screen
 	var title = $('<section id="title" class="full-screen yellow-bg">');
 	var text = $('<h1 class="green">').text('Guac-a-Mole');
+	var scope = this;
 	title.append(text);
 	$('body').append(title);
 	text.animate(
@@ -349,7 +350,7 @@ Game.prototype.preGame = function () {
 		//On completion do this function
 		function () {
 			var game = new Game(); //Create the game
-			return setTimeout(function () {this.playerScreen(game); }, 1000); //Go to player creation
+			return setTimeout(function () {scope.playerScreen(); }, 1000); //Go to player creation
 		}
 	);
 
@@ -365,6 +366,7 @@ Game.prototype.playerScreen = function () {
 	//buttons
 	for (i = 1; i < 5; i++) {
 		var button = $('<button>').addClass('red-bg').text(i);
+		var scope = this;
 		getPlayers.append(button);
 	}
 
@@ -392,8 +394,8 @@ Game.prototype.playerScreen = function () {
 		form.append('<input type="submit" id="play" class="button orange-bg" value="Let\'s go!">');
 		form.submit(function (e) {
 			e.preventDefault();
-			this.makePlayers($('input'));
-			this.run();
+			scope.makePlayers($('input'));
+			scope.run();
 		});
 	});
 
@@ -402,10 +404,5 @@ Game.prototype.playerScreen = function () {
 
 
 
-
-
-
-
-
-
 var game = new Game();
+game.preGame();
