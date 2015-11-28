@@ -61,8 +61,7 @@ Game.prototype = {
 		//Tricky way to iterate through the players but only as high as the number of players there are.
 		this.currentLevel = (this.currentLevel + 1) % this.levelData.length;
 		if (this.currentLevel === 0) { //When we've gone through all the levels...
-			var changeToActThree;// ...move on to Act III.    //Placeholder!!!!!!!!!!!!!!!!!!
-			return this.recap();
+			return this.recap(); //On to Act III
 		}
 		$('#scoreboard-title').text("Level " + (this.currentLevel + 1));
 		console.log("Now for level " + this.currentLevel);
@@ -85,7 +84,7 @@ Game.prototype = {
 			grid.append(piece); //Adds one new piece to the grid
 		}
 
-		$('#game').on('click', function (e) { //When an active cell is clicked
+		grid.mousedown(function (e) { //When an active cell is clicked
 			//Call the Player's swing function sending what was hit as an argument
 			scope.playerList[scope.currentPlayer].swing(e.target);
 		});
@@ -137,7 +136,6 @@ Game.prototype = {
 			hitPiecesRemaining = scope.levelData[scope.currentLevel].maxHitPieces,
 			speedFactor = this.levelData[this.currentLevel].speedFactor;
 
-		//Add pre game count down etc...???????????????????????????
 		//Starts game action
 		var interval = setInterval(function () { //Like a for loop
 			if (hitPiecesRemaining === 0) {
@@ -170,15 +168,15 @@ Game.prototype = {
 		this.countdown();
 
 	},
-	
+
 	countdown: function () {
 		var scope = this;
 		var popUp = $('<div class="pop-up">');
 		popUp.append("<h2>Are you ready " + this.playerList[this.currentPlayer].name + "?</h2>");
 		this.map.prepend(popUp);
-		
+
 		function count() {
-			
+
 			var number = $('<div>').css('fontSize', "10em");
 			popUp.append(number);
 			var i = 0,
@@ -193,36 +191,75 @@ Game.prototype = {
 					return scope.start();
 				}
 			}, 1300);
-			
+
 		}
-		
+
 		setTimeout(count, 1500);
 	},
-	
+
 	recap: function () {
-		var fullScreen = $('<div class="full-screen"').css('top', '200vh');
-		$('body').append(fullScreen);	
-		
+		var fullScreen = $('<div class="full-screen orange-bg">').css('top', '200vh');
+		var rapSheet,
+			score,
+			finalScore,
+			i;
+		$('body').append(fullScreen);
+		fullScreen.append('<h1>Results...</h1>');
 		fullScreen.animate({top: "0vh"}, 600);
-		//show all players and their scores
-		
+
+		for (i = 0; i < this.playerList.length; i++) {
+			//show all players and their scores
+			rapSheet = $('<section class="rap-sheet">');
+			rapSheet.css({
+				width: 100 / this.playerList.length + "%",
+				display: 'inline-block',
+				height: "100vh",
+				overflow: "none"
+			});
+			rapSheet.append(this.playerList[i].name);
+			fullScreen.append(rapSheet);
+			score = $('<div>').text(this.playerList[i].score);
+			rapSheet.append(score);
+
+
 		//add all accuracy points
-		
+
+			var accuracy = Math.floor(this.playerList[i].getAccuracy() * 50);
+			this.playerList[i].score += accuracy;
+			rapSheet.append('<div>Accuracy bonus: ' + accuracy + '</div>');
+
+
 		//add all completeion points
-		
+			var completion = Math.floor(this.playerList[i].getCompletion() * 50);
+			this.playerList[i].score += completion;
+			rapSheet.append('<div>Completion bonus: ' + completion + '</div>');
+
+
+			rapSheet.append('<div>Final Score:<br><strong>' + this.playerList[i].score + '</strong></div>');
+
 		//compare totals
-		
-		//highlight winner (if more than one player)
-		
-		//as to play again.
+
+			if (!this.winner ||
+					this.playerList[i].score > this.winner.score) {
+				this.winner = this.playerList[i];
+			}
+
+
+
+			//highlight winner (if more than one player playing)
+			$('.rap-sheet').eq(this.winner.id).addClass('green-bg');
+
+
+		}
 	}
+
 };
 
 
 
 //Player constructor function
 //constructor is called by the game and takes an argument of the game to link them up
-var Player = function (game, name) {//game is scope of the currently played game.
+var Player = function (game, name) { //game is scope of the currently played game.
 	this.game = game; //sets game argument as variable to use in prototype
 	this.name = name;
 	this.id = this.game.playerList.length; //For if multiple players with same name
@@ -239,10 +276,12 @@ Player.prototype = {
 		var game = this.game;
 		target = $(target);
 
-		this.swings++; //Log every swing.
+		this.swings++; //Countevery swing.
+		console.log("Swing " + this.swings);
 
 		if (target.hasClass('active')) {// If the swing was a hit...
 			this.hits++;
+			console.log("Hit " + this.hits);
 			this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
 			$('.player-' + this.id).text(this.score);
 			console.log(this.score);
@@ -253,8 +292,8 @@ Player.prototype = {
 				target.removeClass('green-bg hit').addClass('passive');//Change color for a moment, and then make cell passive again
 			}, 500);
 		}
-
 	},
+
 	getAccuracy: function () {
 		return this.hits / this.swings;
 	},
@@ -263,7 +302,6 @@ Player.prototype = {
 		//get max number of possible hits
 		var maxPossible = 0;
 		this.game.levelData.forEach(function (currentObject) { //levelData is an array of objects
-			console.log(currentObject);
 			maxPossible += currentObject.maxHitPieces;
 		});
 
@@ -275,7 +313,7 @@ Player.prototype = {
 
 //Create players
 //Defined after the Player constructor function to have access to it.
-Game.prototype.getPlayers = function (playerInput) {
+Game.prototype.makePlayers = function (playerInput) {
 	var i = 0;
 	for (i = 0; i < (playerInput.length - 1); i++) { //The last input is the submit button
 		var name = playerInput[i].value ||
@@ -292,7 +330,8 @@ Game.prototype.getPlayers = function (playerInput) {
 
 //Act I
 
-function preGame() {
+
+Game.prototype.preGame = function () {
 	//Title Screen
 	var title = $('<section id="title" class="full-screen yellow-bg">');
 	var text = $('<h1 class="green">').text('Guac-a-Mole');
@@ -310,37 +349,36 @@ function preGame() {
 		//On completion do this function
 		function () {
 			var game = new Game(); //Create the game
-			return setTimeout(function () {playerScreen(game); }, 1000); //Go to player creation
+			return setTimeout(function () {this.playerScreen(game); }, 1000); //Go to player creation
 		}
 	);
 
-}
+};
 
-
-function playerScreen(game) {
+Game.prototype.playerScreen = function () {
 	var i;
 	//Set-up the page
-	var makePlayers = $('<section id="make-players">');
-	makePlayers.append('<div class="full-screen green-bg">');
-	makePlayers = makePlayers.children().eq(0);
-	makePlayers.append('<h1>How many players?</h1>');
+	var getPlayers = $('<section id="get-players">');
+	getPlayers.append('<div class="full-screen green-bg">');
+	getPlayers = getPlayers.children().eq(0);
+	getPlayers.append('<h1>How many players?</h1>');
 	//buttons
 	for (i = 1; i < 5; i++) {
 		var button = $('<button>').addClass('red-bg').text(i);
-		makePlayers.append(button);
+		getPlayers.append(button);
 	}
 
-	
-	
-	$('body').prepend(makePlayers);
+
+
+	$('body').prepend(getPlayers);
 	$('#title').animate({left: "-200vw"}, 400, 'swing', function () {this.remove(); });//Animate title off screen and remove it.
 
-	makePlayers.on('click', 'button', function (e) {
+	getPlayers.on('click', 'button', function (e) {
 
 		$('h1').text("Player names:");
 		$('button').remove();
 		var form = $('<form>');
-		makePlayers.append(form);
+		getPlayers.append(form);
 		for (i = 1; i <= e.target.innerText; i++) {
 			var formInput =
 				'<div class="player">' +
@@ -354,13 +392,20 @@ function playerScreen(game) {
 		form.append('<input type="submit" id="play" class="button orange-bg" value="Let\'s go!">');
 		form.submit(function (e) {
 			e.preventDefault();
-			game.getPlayers($('input'));
-			game.run();
+			this.makePlayers($('input'));
+			this.run();
 		});
 	});
-	
-	
-}
 
 
-preGame();
+};
+
+
+
+
+
+
+
+
+
+var game = new Game();

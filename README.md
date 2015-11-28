@@ -71,3 +71,4 @@ play(); //Start the Game flow
 - html snippets
 - css snippets
   - bash: `cat styles/pieces/* > styles/master.css`
+- on click vs mousedown
