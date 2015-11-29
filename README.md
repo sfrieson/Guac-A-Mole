@@ -19,7 +19,6 @@ Make a 1- or 2-player, responsive, in-browser game, taking advantage of semantic
 
 ## Display
 
-
 ## Future Improvements
 
 ## Thank You
@@ -72,3 +71,6 @@ play(); //Start the Game flow
 - css snippets
   - bash: `cat styles/pieces/* > styles/master.css`
 - on click vs mousedown
+- point count up (semi-)failure
+- random string after image name;
+

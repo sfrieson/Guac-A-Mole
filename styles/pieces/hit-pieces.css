@@ -1,0 +1,19 @@
+/*States for game pieces*/
+
+.passive {
+	background: url(../images/Guac-a-Mole_empty.png);
+	background-size: cover;
+}
+.active {
+	background: url(../images/Guac-a-Mole_empty.png); /*Avoids split second of no image giving away the next move*/
+	background-size: cover;
+}
+.hit {
+	background: url(../images/Guac-a-Mole_guacamole.png);
+	background-size: cover;
+}
+
+img {
+	height: 100%;
+	width: 100%;
+}

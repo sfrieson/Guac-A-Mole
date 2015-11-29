@@ -36,9 +36,9 @@ Game.prototype = {
 	//-------------NOTE: Player creation Game.prototype.getPlayers() below the Player construtor function
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
-		{pieces: 6, grid: '3x2', speedFactor: 1000, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1 [0]
-		{pieces: 9, grid: '3x3', speedFactor: 500, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2 [1]
-		{pieces: 12, grid: '4x3', speedFactor: 300, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3 [2]
+		{pieces: 6, grid: '3x2', speedFactor: 1050, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1 [0]
+		{pieces: 9, grid: '3x3', speedFactor: 450, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2 [1]
+		{pieces: 12, grid: '4x3', speedFactor: 350, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3 [2]
 	],
 
 	//Changes the player at the beginning of end of each start of the level
@@ -86,7 +86,8 @@ Game.prototype = {
 
 		grid.mousedown(function (e) { //When an active cell is clicked
 			//Call the Player's swing function sending what was hit as an argument
-			scope.playerList[scope.currentPlayer].swing(e.target);
+//			debugger;
+			scope.playerList[scope.currentPlayer].swing(e);
 		});
 		this.map.append(grid);
 		$('#game').append(this.map); //gets grid into the game
@@ -120,11 +121,13 @@ Game.prototype = {
 		var $passiveCells = $('.passive');
 		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
 		var showLength = this.levelData[this.currentLevel].showLength; //grabs the showLength for this level.
+		var image = $('<img src="images/avocado.gif?' + Math.random() + '">');
 		randCell = $passiveCells.eq(randCell); //Use that random number to select the corresponding random cell.
-		randCell.removeClass('passive').addClass('active red-bg'); //Change state of cell to active for hit.
+		randCell.removeClass('passive').addClass('active').append(image); //Change state of cell to active for hit.
 
 		setTimeout(function () {  //length of time cell is active before it becomes passive again
 			randCell.removeClass('active red-bg').addClass('passive');
+			image.remove();
 		}, showLength); //the time is different for each level
 	},
 
@@ -202,6 +205,7 @@ Game.prototype = {
 		var rapSheet,
 			score,
 			finalScore,
+			scope = this,
 			i;
 		$('body').append(fullScreen);
 		fullScreen.append('<h1>Results...</h1>');
@@ -234,9 +238,8 @@ Game.prototype = {
 			this.playerList[i].score += completion;
 			rapSheet.append('<div>Completion bonus: ' + completion + '</div>');
 
-
-			rapSheet.append('<div>Final Score:<br><strong>' + this.playerList[i].score + '</strong></div>');
-
+			finalScore = $('<div>Final Score:<br><strong> ' + this.playerList[i].score + ' </strong></div>');
+			rapSheet.append(finalScore);
 		//compare totals
 
 			if (!this.winner ||
@@ -244,14 +247,14 @@ Game.prototype = {
 				this.winner = this.playerList[i];
 			}
 
-
-
 			//highlight winner (if more than one player playing)
 			$('.rap-sheet').eq(this.winner.id).addClass('green-bg');
 
 
 		}
-	}
+	},
+	
+	cursor: $('<div id="cursor">')
 
 };
 
@@ -272,24 +275,26 @@ var Player = function (game, name) { //game is scope of the currently played gam
 
 Player.prototype = {
 	//Functionality when there is a sing.
-	swing: function (target) {
+	swing: function (e) {
 		var game = this.game;
-		target = $(target);
+		var target = $(e.target.parentElement);
+		
 
 		this.swings++; //Countevery swing.
 		console.log("Swing " + this.swings);
 
-		if (target.hasClass('active')) {// If the swing was a hit...
+		if (e.target.hasAttribute('src')) {// If the swing was a hit (because they clicked an img that only shows for active divs)
 			this.hits++;
 			console.log("Hit " + this.hits);
 			this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
 			$('.player-' + this.id).text(this.score);
 			console.log(this.score);
 				//Make inactive for multiple hits, and allow hit styling
-			target.removeClass('red-bg active').addClass('green-bg hit');
+//			debugger;
+			target.removeClass('active').text("").addClass('hit');
 				//After a half second reset defaults
 			setTimeout(function () {
-				target.removeClass('green-bg hit').addClass('passive');//Change color for a moment, and then make cell passive again
+				target.removeClass('hit').addClass('passive');//Change color for a moment, and then make cell passive again
 			}, 500);
 		}
 	},
@@ -366,12 +371,12 @@ Game.prototype.playerScreen = function () {
 	//buttons
 	for (i = 1; i < 5; i++) {
 		var button = $('<button>').addClass('red-bg').text(i);
-		var scope = this;
+		
 		getPlayers.append(button);
 	}
 
 
-
+	var scope = this;
 	$('body').prepend(getPlayers);
 	$('#title').animate({left: "-200vw"}, 400, 'swing', function () {this.remove(); });//Animate title off screen and remove it.
 
