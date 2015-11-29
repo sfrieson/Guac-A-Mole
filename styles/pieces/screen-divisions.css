@@ -22,29 +22,37 @@
     float: left;
     display: inline-block;
 	background-color: pink;
-	padding: 1em;
+	padding: .5em;
+	border-right: 5px solid #d92332;
 }
 
-#map { /*Holds the map where play happens on the right side*/
-    background-color: peachpuff;
+.player {
+	margin: 0;
+	padding: .2em 0;
+	border-bottom: 2px solid rgba(0, 0, 0, .3);
+}
+.player:last-child {
+	border: none;
+}
+
+#map { /*Holds the gameboard where play happens on the right side*/
+    background: url(../images/chip_pattern.png) #f2bb13;
     height: 100%;
     width: 126vh;
     float: left;
     display: inline-block;
 }
 
-.h-split {
-    display:inline-block;
-    position: relative;
-    width: 50%;
-    height: 100%;
-    border: 1px solid;
-    float: left;
+.rap-sheet {
+	display: inline-block;
+	height: 100vh;
+	overflow: none;
+	font-family: 'Amatic SC', sans-serif;
+	font-size: 1em;
+	padding-top: 1em;
+	background-color: #d92332;
 }
-.v-split {
-    display:block;
-    position: relative;
-    width: 100%;
-    height: 50%;
-    border: 1px solid;
+
+.winner {
+	background-color: #618c42;
 }

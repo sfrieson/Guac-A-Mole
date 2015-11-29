@@ -7,7 +7,6 @@
 }
 .cell-3x2{
     margin: 0;
-/*    border: 1px solid;*/
     height: 50%;
     width: 33.333%;
     float: left;
@@ -20,7 +19,6 @@
 }
 .cell-3x3{
     margin: 0;
-/*    border: 1px solid;*/
     height: 33.333%;
     width: 33.333%;
     float: left;
@@ -33,7 +31,6 @@
 }
 .cell-4x3{
     margin: 0;
-/*    border: 1px solid;*/
     height: 33.333%;
     width: 25%;
     float: left;

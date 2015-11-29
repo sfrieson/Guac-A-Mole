@@ -101,14 +101,20 @@ h3 {
 }
 
 #scoreboard-title {
-	margin-top: 0;
+	margin: 0;
+}
+
+.player-name {
+	font-family: 'Amatic SC', sans-serif;
+	font-size: 1.5em;
+	margin: 0;
+	padding: 0;
 }
 
 .score {
-	font-family: monospace;
-	font-size: .8em;
+	font-family: 'Amatic SC', sans-serif;
+	font-size: 1em;
 	text-align: center;
-	border-bottom: 2px solid rgba(0, 0, 0, .3);
 	margin-bottom: 0;
 }
 
@@ -116,7 +122,17 @@ h3 {
 	content: "Score: ";
 
 }
-/*Form Elements*/
+
+#countdown {
+	font-size: 8em;
+	font-family: "Permanent Marker" sans-serif;
+	color: #d92332;
+}
+
+.final-score {
+	text-decoration: underline;
+	font-size: 1.5em;
+}/*Form Elements*/
 .button, button{
     height: 10vh;
     width: 10vh;
@@ -127,6 +143,7 @@ h3 {
     margin: 1vh;
     font-weight: bold;
     color: white;
+	font-family: 'Permanent Marker', sans-serif;
 }
 #play {
     width: 40vh;
@@ -135,9 +152,18 @@ input {
     height: 8vh;
     width: 40vh;
     display: inline-block;
+	font-size: 1em;
+	margin-left: .5em;
+	padding: 0 .2em;
+	border-radius: .3em;
+	border: .1em solid #f2bb13;
+	outline: none;
+	font-family: 'Amatic SC', sans-serif;
+	color: #618c42;
 }
 label {
     display: inline-block;
+
 }
 label h2 {
     margin:  0;
@@ -155,7 +181,6 @@ label h2 {
 }
 .cell-3x2{
     margin: 0;
-/*    border: 1px solid;*/
     height: 50%;
     width: 33.333%;
     float: left;
@@ -168,7 +193,6 @@ label h2 {
 }
 .cell-3x3{
     margin: 0;
-/*    border: 1px solid;*/
     height: 33.333%;
     width: 33.333%;
     float: left;
@@ -181,7 +205,6 @@ label h2 {
 }
 .cell-4x3{
     margin: 0;
-/*    border: 1px solid;*/
     height: 33.333%;
     width: 25%;
     float: left;
@@ -228,29 +251,37 @@ img {
     float: left;
     display: inline-block;
 	background-color: pink;
-	padding: 1em;
+	padding: .5em;
+	border-right: 5px solid #d92332;
 }
 
-#map { /*Holds the map where play happens on the right side*/
-    background-color: peachpuff;
+.player {
+	margin: 0;
+	padding: .2em 0;
+	border-bottom: 2px solid rgba(0, 0, 0, .3);
+}
+.player:last-child {
+	border: none;
+}
+
+#map { /*Holds the gameboard where play happens on the right side*/
+    background: url(../images/chip_pattern.png) #f2bb13;
     height: 100%;
     width: 126vh;
     float: left;
     display: inline-block;
 }
 
-.h-split {
-    display:inline-block;
-    position: relative;
-    width: 50%;
-    height: 100%;
-    border: 1px solid;
-    float: left;
+.rap-sheet {
+	display: inline-block;
+	height: 100vh;
+	overflow: none;
+	font-family: 'Amatic SC', sans-serif;
+	font-size: 1em;
+	padding-top: 1em;
+	background-color: #d92332;
 }
-.v-split {
-    display:block;
-    position: relative;
-    width: 100%;
-    height: 50%;
-    border: 1px solid;
+
+.winner {
+	background-color: #618c42;
 }

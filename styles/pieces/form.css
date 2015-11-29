@@ -9,6 +9,7 @@
     margin: 1vh;
     font-weight: bold;
     color: white;
+	font-family: 'Permanent Marker', sans-serif;
 }
 #play {
     width: 40vh;
@@ -17,9 +18,18 @@ input {
     height: 8vh;
     width: 40vh;
     display: inline-block;
+	font-size: 1em;
+	margin-left: .5em;
+	padding: 0 .2em;
+	border-radius: .3em;
+	border: .1em solid #f2bb13;
+	outline: none;
+	font-family: 'Amatic SC', sans-serif;
+	color: #618c42;
 }
 label {
     display: inline-block;
+
 }
 label h2 {
     margin:  0;

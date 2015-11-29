@@ -25,7 +25,7 @@ Player
 //game constructor function
 var Game = function () {
 	this.$scoreboard = $('<section id="score">');
-	this.map = $('<section id="map">');
+	this.map = $('<section id="map">'); //right hand side of the board
 	this.$board = $('<section>').append(this.$scoreboard).append(this.map); //board is made up of scoreboard and map sections
 	this.playerList = []; //Player list.  Linked to each player's object
 	this.currentPlayer = 0; //Holds the index for playerList for the player who's currently playing. Initialized for first player
@@ -102,9 +102,9 @@ Game.prototype = {
 		scoreboard.append(title);
 
 		for (i = 0; i < this.playerList.length; i++) {
-			var holder = $('<div>');
-			var playerName = $('<h3>').text(this.playerList[i].name);
-			var score = $('<div>').attr('class', 'score player-' + this.playerList[i].id).text(0);
+			var holder = $('<div>').addClass('player');
+			var playerName = $('<h3>').addClass('player-name').text(this.playerList[i].name);
+			var score = $('<div>').addClass('score player-' + this.playerList[i].id).text(0);
 			holder.append(playerName).append(score);
 			scoreboard.append(holder);
 		}
@@ -180,7 +180,7 @@ Game.prototype = {
 
 		function count() {
 
-			var number = $('<div>').css('fontSize', "10em");
+			var number = $('<div>').attr('id', 'countdown');
 			popUp.append(number);
 			var i = 3;
 			var counter = setInterval(function () {
@@ -214,10 +214,7 @@ Game.prototype = {
 			//show all players and their scores
 			rapSheet = $('<section class="rap-sheet">');
 			rapSheet.css({
-				width: 100 / this.playerList.length + "%",
-				display: 'inline-block',
-				height: "100vh",
-				overflow: "none"
+				width: 100 / this.playerList.length + "%" //Makes sure all players fit across
 			});
 			rapSheet.append(this.playerList[i].name);
 			fullScreen.append(rapSheet);
@@ -237,7 +234,7 @@ Game.prototype = {
 			this.playerList[i].score += completion;
 			rapSheet.append('<div>Completion bonus: ' + completion + '</div>');
 
-			finalScore = $('<div>Final Score:<br><strong> ' + this.playerList[i].score + ' </strong></div>');
+			finalScore = $('<div>Final Score:<br><strong> ' + this.playerList[i].score + ' </strong></div>').attr('class', 'final-score');
 			rapSheet.append(finalScore);
 		//compare totals
 
@@ -247,7 +244,7 @@ Game.prototype = {
 			}
 
 			//highlight winner (if more than one player playing)
-			$('.rap-sheet').eq(this.winner.id).addClass('green-bg');
+			$('.rap-sheet').eq(this.winner.id).addClass('winner');
 
 
 		}
@@ -286,7 +283,7 @@ Player.prototype = {
 			this.score = this.score + game.levelData[game.currentLevel].pointValue; //Add to the score depend on level's point value.
 			$('.player-' + this.id).text(this.score);
 			console.log(this.score);
-				//Make inactive for multiple hits, and allow hit styling
+				//Make inactive to avoid multiple hits, and allow hit styling
 //			debugger;
 			target.removeClass('active').text("").addClass('hit');
 				//After a half second reset defaults
@@ -366,7 +363,7 @@ Game.prototype.playerScreen = function () {
 	getPlayers = getPlayers.children().eq(0);
 	getPlayers.append('<h1>How many players?</h1>');
 	//buttons
-	for (i = 1; i < 5; i++) {
+	for (i = 1; i <= 4; i++) {
 		var button = $('<button>').addClass('red-bg').text(i);
 		
 		getPlayers.append(button);
@@ -388,9 +385,14 @@ Game.prototype.playerScreen = function () {
 				'<div class="player">' +
 				'<label for="Player ' + i + '">' +
 				'<h2>Player ' + i + ':</h2>' +
-				'</label>' +
-				'<input type="text">' +
+				'</label>';
+			if (i === 1) {
+				formInput += '<input type="text" autofocus>' + //Adds autofocus to the first input
 				'</div>';
+			} else {
+				formInput += '<input type="text">' +
+				'</div>';
+			}
 			form.append(formInput);
 		}
 		form.append('<input type="submit" id="play" class="button orange-bg" value="Let\'s go!">');
