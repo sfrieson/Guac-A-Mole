@@ -167,7 +167,7 @@ Game.prototype = {
 		$('body').append(container);
 		this.setScoreboard();//Set scoreboard
 		$('.player-' + this.currentPlayer).parent().addClass('dorange');
-		this.setBoard();//Set playing board
+		this.setBoard(); //Set playing board
 		this.countdown();
 
 	},
@@ -182,19 +182,18 @@ Game.prototype = {
 
 			var number = $('<div>').css('fontSize', "10em");
 			popUp.append(number);
-			var i = 0,
-				text = ['3...', '2...', '1...', 'GO!'];
+			var i = 3;
 			var counter = setInterval(function () {
-				number.text(text[i]).css('opacity', 1);
+				number.text(i).css('opacity', 1);
 				number.animate({opacity: 0}, 600);
-				i++;
-				if (i > 3) {
+				
+				if (i === 0) {
 					clearInterval(counter);
 					popUp.remove();
 					return scope.start();
 				}
+				i--;
 			}, 1300);
-
 		}
 
 		setTimeout(count, 1500);
@@ -252,9 +251,7 @@ Game.prototype = {
 
 
 		}
-	},
-	
-	cursor: $('<div id="cursor">')
+	}
 
 };
 
