@@ -4,7 +4,7 @@ $(document).ready(gameTime);
 
 function gameTime() {
 	'use strict';
-	
+
 	//game constructor function
 	var Game = function () {
 		this.$scoreboard = $('<section id="score">'); //Left side of the game
@@ -12,7 +12,7 @@ function gameTime() {
 		this.$board = $('<section>').append(this.$scoreboard).append(this.map); //Board is made up of scoreboard and map sections
 		this.playerList = []; //Link to each player's object. Populated by Game.getPlayers()
 		this.currentPlayer = 0; //Holds the index for playerList for currently playing. Initialized for first player.
-		this.currentLevel = 2; //Holds the index of levelData for level being played.  Initialized for first level.
+		this.currentLevel = 0; //Holds the index of levelData for level being played.  Initialized for first level.
 	};
 
 	Game.prototype = {
