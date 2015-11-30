@@ -1,110 +1,94 @@
 /*global $, console, alert, prompt, document, window*/
 'use strict';
-/*
-Game
-	level
-	board
-	hit pieces
-	timer/counter => time left/number of hit pieces left
-	scoreboard
-	whose turn
-
-
-Player
-	name
-	hit()
-	score
-	accuracy rate
-	completion rate
-*/
-
-
-
-
 
 //game constructor function
 var Game = function () {
-	this.$scoreboard = $('<section id="score">');
-	this.map = $('<section id="map">'); //right hand side of the board
-	this.$board = $('<section>').append(this.$scoreboard).append(this.map); //board is made up of scoreboard and map sections
-	this.playerList = []; //Player list.  Linked to each player's object
-	this.currentPlayer = 0; //Holds the index for playerList for the player who's currently playing. Initialized for first player
-	this.currentLevel = 0; //Holds the index of levelData for the current level being played.  Initialized for first level
+	this.$scoreboard = $('<section id="score">'); //Left side of the game
+	this.map = $('<section id="map">'); //Right side of the board
+	this.$board = $('<section>').append(this.$scoreboard).append(this.map); //Board is made up of scoreboard and map sections
+	this.playerList = []; //Link to each player's object. Populated by Game.getPlayers()
+	this.currentPlayer = 0; //Holds the index for playerList for currently playing. Initialized for first player.
+	this.currentLevel = 2; //Holds the index of levelData for level being played.  Initialized for first level.
 };
 
 Game.prototype = {
-	//-------------NOTE: Player creation Game.prototype.getPlayers() below the Player construtor function
+	//-------------NOTE: There are a couple functions below the Player construtor function
 	//Data for how many pieces go on each level and how they should be styled.
 	levelData: [
-		{pieces: 6, grid: '3x2', speedFactor: 1050, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1 [0]
-		{pieces: 9, grid: '3x3', speedFactor: 450, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2 [1]
-		{pieces: 12, grid: '4x3', speedFactor: 350, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3 [2]
+		{pieces: 6, grid: '3x2', speedFactor: 1050, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1
+		{pieces: 9, grid: '3x3', speedFactor: 450, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2
+		{pieces: 12, grid: '4x3', speedFactor: 350, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3
 	],
 
-	//Changes the player at the beginning of end of each start of the level
+	//Changes the player before the start of each round
 	changePlayer: function () {
-		$('.player-' + this.currentPlayer).parent().removeClass('dorange'); //Un-highlight player
+		$('.player-' + this.currentPlayer).parent().removeClass('dorange'); //Un-highlight player at start of round
+		
 		//Tricky way to iterate through the players but only as high as the number of players there are.
 		this.currentPlayer = (this.currentPlayer + 1) % this.playerList.length;
+		
 		$('.player-' + this.currentPlayer).parent().addClass('dorange'); //Highlight next player
 
 		if (this.currentPlayer === 0) { //When we're back to the top of the player list...
 			return this.changeLevel(); // ...change the level and don't finish up this function and don't finish up the function.
 		}
+		
 		console.log("Now playing..." + this.playerList[this.currentPlayer].name);
-		this.countdown(); //Otherwise, start up the game for the new player.
+		this.countdown(); //(After if...) Otherwise, start up the game for the new player.
 	},
 
 	//Changes the level after each player has played it
 	changeLevel: function () {
 
-		//Tricky way to iterate through the players but only as high as the number of players there are.
+		//Tricky way to iterate through the levels but only as high as the number of levels there are.
 		this.currentLevel = (this.currentLevel + 1) % this.levelData.length;
 		if (this.currentLevel === 0) { //When we've gone through all the levels...
-			return this.recap(); //On to Act III
+			return this.recap(); //On to the end of the game
 		}
 		$('#scoreboard-title').text("Level " + (this.currentLevel + 1));
 		console.log("Now for level " + this.currentLevel);
-		console.log("Now playing..." + this.playerList[this.currentPlayer].name); //Necessary for the first player of the round.
-		this.setBoard(); //Otherwise, swap out the grid for the new level.
+		console.log("Now playing..." + this.playerList[this.currentPlayer].name);
+		this.setBoard(); //(After if...) Otherwise, swap out the grid for the new level.
 		this.countdown(); //Start up the next round.
 	},
 
-	//Sets up the board for the beginning of a round
+	//Sets up the board for the beginning of each level
 	setBoard: function () {
-		this.map.empty(); //Removes last board. (it leaves the scoreboard standing)
-		var scope = this,
-			level = this.currentLevel, //get the current level
-			grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid), //make the grid div with size setting in ID
-			piece,
-			i;
+		this.map.empty(); //Removes last grid. (it leaves the scoreboard standing)
+		var scope = this;
+		var	level = this.currentLevel; //get the current level
+		var	grid = $('<div>').attr('id', 'grid-' + this.levelData[level].grid); //make the grid div with size setting in ID
+		var	piece;
+		var	i;
 
 		for (i = 0; i < this.levelData[level].pieces; i++) { //Loops for the number of pieces for the level
-			piece = $('<div>').attr('class', 'passive cell-' + this.levelData[level].grid); //sets pieces' class
+			piece = $('<div>').addClass('passive cell-' + this.levelData[level].grid); //sets pieces' class
 			grid.append(piece); //Adds one new piece to the grid
 		}
 
-		grid.mousedown(function (e) { //When an active cell is clicked
-			//Call the Player's swing function sending what was hit as an argument
-//			debugger;
+		grid.mousedown(function (e) { //When an anywhere on grid is clicked...
+			//... call that player's swing function sending
 			scope.playerList[scope.currentPlayer].swing(e);
 		});
+		
 		this.map.append(grid);
-		$('#game').append(this.map); //gets grid into the game
+		$('#game').append(this.map);
 		console.log("Gameboard loaded.");
 	},
 
-
+	//Sets up the scoreboard at the beginning of the game.
 	setScoreboard: function () {
+		var scoreboard = $('<div id="scoreboard">'); //Contains name and score of each player
+		var title = $('<h2 id="scoreboard-title">').text("Level " + (this.currentLevel + 1));
 		var i;
-		var scoreboard = $('<div>').attr('id', 'scoreboard'); //Make the div
-		var title = $('<h2>').attr('id', 'scoreboard-title').text("Level " + (this.currentLevel + 1));
+		
 		scoreboard.append(title);
 
 		for (i = 0; i < this.playerList.length; i++) {
 			var holder = $('<div>').addClass('player');
 			var playerName = $('<h3>').addClass('player-name').text(this.playerList[i].name);
 			var score = $('<div>').addClass('score player-' + this.playerList[i].id).text(0);
+			
 			holder.append(playerName).append(score);
 			scoreboard.append(holder);
 		}
@@ -119,36 +103,35 @@ Game.prototype = {
 	showHitPiece: function () {
 		var scope = this;
 		var $passiveCells = $('.passive');
-		var randCell = parseInt(Math.random() * $passiveCells.length, 10);//select random number possible for available passive divs
-		var showLength = this.levelData[this.currentLevel].showLength; //grabs the showLength for this level.
+		var randCell = parseInt(Math.random() * $passiveCells.length, 10); //Selects random number possible for available .passive divs
+		var showLength = this.levelData[this.currentLevel].showLength; //Grabs the length of time piece is shown for this level.
 		var image = $('<img src="images/avocado.gif?' + Math.random() + '">');
-		randCell = $passiveCells.eq(randCell); //Use that random number to select the corresponding random cell.
-		randCell.removeClass('passive').addClass('active').append(image); //Change state of cell to active for hit.
+		randCell = $passiveCells.eq(randCell); //Use that random number to select the corresponding random .passive cell.
+		randCell.removeClass('passive').addClass('active').append(image); //Change state of cell to .active for hit.
 
 		setTimeout(function () {  //length of time cell is active before it becomes passive again
 			randCell.removeClass('active red-bg').addClass('passive');
 			image.remove();
-		}, showLength); //the time is different for each level
+		}, showLength);
 	},
 
 
 	//Starts the round
-	start: function (player) {
+	start: function () {
 		console.log("Start of round.");
-		var scope = this,
-			hitPiecesRemaining = scope.levelData[scope.currentLevel].maxHitPieces,
-			speedFactor = this.levelData[this.currentLevel].speedFactor;
+		var scope = this;
+		var	hitPiecesRemaining = scope.levelData[scope.currentLevel].maxHitPieces; //How many pieces show on this level
+		var	speedFactor = this.levelData[this.currentLevel].speedFactor; //How often pieces show on this level
 
 		//Starts game action
 		var interval = setInterval(function () { //Like a for loop
 			if (hitPiecesRemaining === 0) {
-				clearInterval(interval);//Stop loop
+				clearInterval(interval);//Stop loop when no more pieces are remaining
 				console.log("End of round.");
-				//create a button or timed flow with a button at the end to start next player.
 				return setTimeout(function () {
-					scope.changePlayer();
+					scope.changePlayer(); //Pauses before we go to the next player
 
-				}, 5000);//placeholder to change player after 5 seconds!!!!!!!!!!!!!!!!!!
+				}, 3000);
 
 			}
 
@@ -158,29 +141,31 @@ Game.prototype = {
 
 	},
 
+	//Runs the game
 	run: function () {//The flow for a game.  Called once per game.
 		//Initialize document.body This all only happens once.
 		$('body').empty(); //Remove Act I title screens or previous game (play again).
-		var container = $('<div id="container">'),
+		var container = $('<main>'),
 			gameDiv = $('<div id="game">');
 		container.append(gameDiv);
 		$('body').append(container);
 		this.setScoreboard();//Set scoreboard
-		$('.player-' + this.currentPlayer).parent().addClass('dorange');
+		$('.player-' + this.currentPlayer).parent().addClass('dorange'); //Highlights the first player up (only necessary first time)
 		this.setBoard(); //Set playing board
-		this.countdown();
+		this.countdown(); //Starts level countdown
 
 	},
 
+	//Countdowns before each round
 	countdown: function () {
 		var scope = this;
-		var popUp = $('<div class="pop-up">');
+		var popUp = $('<div class="pop-up">'); //Covers playing board
 		popUp.append("<h2>Are you ready " + this.playerList[this.currentPlayer].name + "?</h2>");
-		this.map.prepend(popUp);
+		this.map.prepend(popUp); //Prepend to make sure it is at the top of the flow and covers everything
 
-		function count() {
+		function count() { //changes the number ever second
 
-			var number = $('<div>').attr('id', 'countdown');
+			var number = $('<div id="countdown">');
 			popUp.append(number);
 			var i = 3;
 			var counter = setInterval(function () {
@@ -193,26 +178,31 @@ Game.prototype = {
 					return scope.start();
 				}
 				i--;
-			}, 1300);
+			}, 1000);
 		}
 
-		setTimeout(count, 1500);
+		setTimeout(count, 1500); //Does this all after seeing the new screen for a moment
 	},
-
+	
+	//Shows how player(s) did at the end of game
 	recap: function () {
 		var fullScreen = $('<div class="full-screen orange-bg">').css('top', '200vh');
-		var rapSheet,
-			score,
-			finalScore,
-			scope = this,
-			i;
+		var rapSheet;
+		var	score;
+		var	finalScore;
+		var	scope = this;
+		var	i;
+		var completion;
+		var accuracy;
 		$('body').append(fullScreen);
 		fullScreen.append('<h1>Results...</h1>');
 		fullScreen.animate({top: "0vh"}, 600);
+		
+			
 
 		for (i = 0; i < this.playerList.length; i++) {
-			//show all players and their scores
-			rapSheet = $('<section class="rap-sheet">');
+			//Shows all players and their game scores
+			rapSheet = $('<section>').addClass('rap-sheet');
 			rapSheet.css({
 				width: 100 / this.playerList.length + "%" //Makes sure all players fit across
 			});
@@ -221,45 +211,65 @@ Game.prototype = {
 			score = $('<div>').text(this.playerList[i].score);
 			rapSheet.append(score);
 
-
-		//add all accuracy points
-
-			var accuracy = Math.floor(this.playerList[i].getAccuracy() * 50);
+			accuracy = Math.floor(this.playerList[i].getAccuracy() * 50);
 			this.playerList[i].score += accuracy;
 			rapSheet.append('<div>Accuracy bonus: ' + accuracy + '</div>');
-
-
-		//add all completeion points
-			var completion = Math.floor(this.playerList[i].getCompletion() * 50);
+			
+			completion = Math.floor(this.playerList[i].getCompletion() * 50);
 			this.playerList[i].score += completion;
 			rapSheet.append('<div>Completion bonus: ' + completion + '</div>');
-
-			finalScore = $('<div>Final Score:<br><strong> ' + this.playerList[i].score + ' </strong></div>').attr('class', 'final-score');
-			rapSheet.append(finalScore);
-		//compare totals
-
-			if (!this.winner ||
-					this.playerList[i].score > this.winner.score) {
+			
+			//Compares totals
+			if (!this.winner || //If winner is still null...
+					this.playerList[i].score > this.winner.score) { //...or this player's score is higher than the current winner's
 				this.winner = this.playerList[i];
 			}
-
-			//highlight winner (if more than one player playing)
-			$('.rap-sheet').eq(this.winner.id).addClass('winner');
+			
+			finalScore = $('<div>Final Score:<br><strong> ' + this.playerList[i].score + ' </strong></div>').attr('class', 'final-score');
+			rapSheet.append(finalScore);
+	
 
 
 		}
+		
+		//highlight winner
+		$('.rap-sheet').eq(this.winner.id).addClass('winner');
+	},
+	
+	preGame: function () {
+		//Title Screen
+		var title = $('<section id="title" class="full-screen yellow-bg">');
+		var text = $('<h1 class="green">').text('Guac-a-Mole');
+		var scope = this;
+		title.append(text);
+		$('body').append(title);
+		text.animate(
+			//CSS properties to move toward
+			{
+				fontSize: "18vh"
+			},
+			//Duration
+			700,
+			//easing
+			'swing',
+			//On completion do this function
+			function () {
+				var game = new Game(); //Create the game
+				return setTimeout(function () {scope.playerScreen(); }, 1000); //Go to player creation
+			}
+		);
 	}
 
 };
 
 
 
-//Player constructor function
-//constructor is called by the game and takes an argument of the game to link them up
+// Player constructor function
+// Constructor is called by the game and takes an argument of the game to link them up
 var Player = function (game, name) { //game is scope of the currently played game.
-	this.game = game; //sets game argument as variable to use in prototype
+	this.game = game; //sets game argument as variable for use in prototype
 	this.name = name;
-	this.id = this.game.playerList.length; //For if multiple players with same name
+	this.id = this.game.playerList.length; //To avoid confusion of multiple players with same name
 	this.score = 0;
 	this.swings = 0;
 	this.hits = 0;
@@ -268,7 +278,7 @@ var Player = function (game, name) { //game is scope of the currently played gam
 };
 
 Player.prototype = {
-	//Functionality when there is a sing.
+	// What happens when player swings
 	swing: function (e) {
 		var game = this.game;
 		var target = $(e.target.parentElement);
@@ -293,10 +303,12 @@ Player.prototype = {
 		}
 	},
 
+	// Calculates the players accuracy
 	getAccuracy: function () {
 		return this.hits / this.swings;
 	},
 
+	// Calculates the percentage of hit pieces successfully hit
 	getCompletion: function () {
 		//get max number of possible hits
 		var maxPossible = 0;
@@ -310,8 +322,9 @@ Player.prototype = {
 
 
 
-//Create players
 //Defined after the Player constructor function to have access to it.
+
+// Creates players and populates the playerList[];
 Game.prototype.makePlayers = function (playerInput) {
 	var i = 0;
 	for (i = 0; i < (playerInput.length - 1); i++) { //The last input is the submit button
@@ -322,39 +335,7 @@ Game.prototype.makePlayers = function (playerInput) {
 	}
 };
 
-
-
-
-
-
-//Act I
-
-
-Game.prototype.preGame = function () {
-	//Title Screen
-	var title = $('<section id="title" class="full-screen yellow-bg">');
-	var text = $('<h1 class="green">').text('Guac-a-Mole');
-	var scope = this;
-	title.append(text);
-	$('body').append(title);
-	text.animate(
-		//CSS properties to move toward
-		{
-			fontSize: "18vh"
-		},
-		//Duration
-		700,
-		//easing
-		'swing',
-		//On completion do this function
-		function () {
-			var game = new Game(); //Create the game
-			return setTimeout(function () {scope.playerScreen(); }, 1000); //Go to player creation
-		}
-	);
-
-};
-
+//Gets input on number of players and their names
 Game.prototype.playerScreen = function () {
 	var i;
 	//Set-up the page
@@ -382,16 +363,16 @@ Game.prototype.playerScreen = function () {
 		getPlayers.append(form);
 		for (i = 1; i <= e.target.innerText; i++) {
 			var formInput =
-				'<div class="player">' +
+				'<div class="player-input-section">' +
 				'<label for="Player ' + i + '">' +
 				'<h2>Player ' + i + ':</h2>' +
 				'</label>';
 			if (i === 1) {
 				formInput += '<input type="text" autofocus>' + //Adds autofocus to the first input
-				'</div>';
+					'</div>';
 			} else {
 				formInput += '<input type="text">' +
-				'</div>';
+					'</div>';
 			}
 			form.append(formInput);
 		}

@@ -32,7 +32,7 @@ body{
     width: inherit;
     height: 84vh;
     z-index: 98;
-    background-color: rgba(255, 255, 255, .95);
+    background-color: rgba(255, 255, 255, .9);
     margin:0;
     position: fixed;
 	padding: 0;
@@ -169,7 +169,7 @@ label h2 {
     margin:  0;
     padding: 0;
 }
-.player {
+.player-input-section {
     margin: 3vh;
 }
 /*grid*/
@@ -229,7 +229,7 @@ img {
 	width: 100%;
 }/*screen divisions*/
 
-#container { /*Largest containter*/
+main { /*Largest containter*/
     position: relative;
     height: 100vh;
     width: 100vw;
