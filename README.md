@@ -106,6 +106,12 @@ The first would have the players score count up from zero to it's appropriate sc
 
 I got each of these to work for one character, but because loops happen so quickly, I ran into some other problems as I tried with multiple players.
 
+***
+
+The game practically doesn't work at all on mobile.  Maybe there is on touch event?
+
+Also with the cursor sometime the divs get highlighted as if they were text.  There is likely a way to stop this from happening.
+
 ## Thank You
 
 Thank you to my professors for hints along the way, my classmates for being helpful to bounce ideas off of and think through problems, and to my alpha and beta testers.
