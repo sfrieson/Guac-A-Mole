@@ -1,5 +1,6 @@
 # Guac-a-Mole
 *A punny play on the classic game*
+![Title Screen](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/title.png)
 
 ## Requirements
 Make a 1- or 2-player, responsive, in-browser game, taking advantage of semantic markup available in HTML.  Using JS or jQuery for DOM manipulation, design and implement logic for winning, and visually display which player won.  Be sure to adhere to KISS and DRY principals.
@@ -20,7 +21,7 @@ The is an intro phase where the play inputs their name or default names are give
 
 The game then has three levels, and each player plays the level before everyone moves on to the next.  Each level, the pieces pop up more frequently and stay up for a shorter amount of time.
 
-
+![](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/game-play.png)
 
 ### Act III. Comparison
 At the end of the game, each players score is shown.  They then get bonus points for their swinging accuracy (hits/total swings), and for game completion (total hits/possible hits)
