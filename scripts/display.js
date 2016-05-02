@@ -1,17 +1,72 @@
-var display = {
-  $scoreboard: $('<section id="score">'), //Left side of the game
-	map: $('<section id="map">'), //Right side of the board
-	$board: $('<section>').append(this.$scoreboard).append(this.map) //Board is made up of scoreboard and map sections
+var display = {};
+
+//Right side of the board
+display.map = $('<section>').attr('id',"map");
+
+//Title Screen
+display.title = function () {
+  var body = $('body');
+	var title = $('<section>').attr('id',"title").addClass("full-screen yellow-bg");
+	var text = $('<h1>').addClass("green").text('Guac-a-Mole');
+	title.append(text);
+	body.append(title);
+
+	text.animate({fontSize: "18vh"}, 700, 'swing',
+		function () {setTimeout(function(){display.getNumberOfPlayers(body, title);}, 1000);}
+	);
+};
+
+//Gets input on number of players and their names
+display.getNumberOfPlayers = function (body, titlePage) {
+	//Set-up the page
+	var getPlayers = $('<section>').attr('id',"get-players");
+
+	var numberPicker = $('<div>').addClass("full-screen green-bg");
+	numberPicker.append( $('<h1>').text("How many players?") );
+	for (i = 1; i <= game.maxPlayers; i++) {
+		numberPicker.append( $('<button>').addClass('red-bg').text(i) );
+	}
+
+	getPlayers.append( numberPicker );
+	body.prepend(getPlayers); //Add behind title
+	title.animate({left: "-200vw"}, 400, 'swing', function () {this.remove();} ); //Animate title off screen and remove it.
+
+	getPlayers.on('click', 'button', function(e){ display.getNames(e.target.innerText); });
+};
+
+display.getNames = function(numOfPlayers) {
+  $('h1').text("Player names:");
+  $('button').remove();
+  var form = $('<form>'),
+  getNames = $('section#get-players div.green-bg');
+
+  for (var i = 1; i <= numOfPlayers; i++) {
+    var formInput = $('<div>').addClass("player-input-section");
+    formInput.append(
+      $('<label>').attr('for', 'Player ' + i).html($('<h2>').text('Player ' + i)),
+      $('<input>').attr('type', 'text')
+    );
+    form.append(formInput);
+    if(i === 0); formInput.focus();
+  }
+  form.append(
+    $('<button>').attr('id',"play").addClass("button orange-bg").text("Let\'s go!")
+  );
+  getNames.append(form);
+  form.submit(function () {
+    game.makePlayers($('input'));
+    display.run();
+  });
 };
 
 //Runs the game
 display.run = function () {//The flow for a game.  Called once per game.
   //Initialize document.body This all only happens once.
-  $('body').empty(); //Remove Act I title screens or previous game (play again).
-  var container = $('<main>');
-  var	gameDiv = $('<div id="game">');
-  container.append(gameDiv);
-  $('body').append(container);
+  $('body').empty() //Remove Act I title screens or previous game (play again).
+  .append(
+    $('<main>').append( $('<div>').attr('id',"game") )
+  );
+  //TODO: Clean this section up a bit.
   game.currentPlayer = game.playerList[0];
   display.setScoreboard();//Set scoreboard
   $('.player-' + game.currentPlayer.id).parent().addClass('dorange'); //Highlights the first player up (only necessary first time)
@@ -21,108 +76,96 @@ display.run = function () {//The flow for a game.  Called once per game.
 
 //Sets up the board for the beginning of each level
 display.setBoard = function (level) {
-  // this.map.empty(); //Removes last grid. (it leaves the scoreboard standing)
   var	grid = $('<div>').attr('id', 'grid-' + level.grid); //make the grid div with size setting in ID
 
-  for (var i = 0; i < level.pieces; i++) { //Loops for the number of pieces for the level
-    var piece = $('<div>').addClass('passive cell-' + level.grid); //sets pieces' class
-    grid.append(piece); //Adds one new piece to the grid
+  for (var i = 0; i < level.pieces; i++) {
+    grid.append( $('<div>').addClass('passive cell-' + level.grid) ); //Adds one new piece to the grid
   }
 
-  grid.mousedown(function (e) { //When an anywhere on grid is clicked...
-    //... call that player's swing function sending
-    game.currentPlayer.swing(e.target);
-  });
+  grid.mousedown(game.currentPlayer.swing);
 
-  this.map.html(grid);
+  this.map.html(grid); //replace with the grid
   $('#game').append(this.map);
-  console.log("Gameboard loaded.");
 };
 
 //Sets up the scoreboard at the beginning of the game.
 display.setScoreboard = function () {
-  var scoreboard = $('<div id="scoreboard">'), //Contains name and score of each player
-      title = $('<h2 id="scoreboard-title">').text("Level " + (game.currentLevel.id)),
-      players = game.playerList,
-      i;
+  var scoreboard = $('<div>').attr('id',"scoreboard");
+  this.scoreboardTitle = $('<h2>').attr('id',"scoreboard-title").text("Level " + (game.currentLevel.id));
+  scoreboard.append(this.scoreboardTitle);
 
-  scoreboard.append(title);
+  game.playerList.forEach (function(player, i) {
+  	var namePlace = $('<div>').addClass('player');
+  	namePlace.append( $('<h3>').addClass('player-name').text(player.name),
+  	 $('<div>').addClass('score player-' + player.id).text(0)
+    );
 
-  for (i = 0; i < players.length; i++) {
-  	var holder = $('<div>').addClass('player');
-  	var playerName = $('<h3>').addClass('player-name').text(players[i].name);
-  	var score = $('<div>').addClass('score player-' + players[i].id).text(0);
-
-  	holder.append(playerName).append(score);
-  	scoreboard.append(holder);
-  }
+  	scoreboard.append(namePlace);
+  });
 
   $('#game').append(scoreboard);
-  console.log("Scoreboard loaded.");
 };
 
 //Countdowns before each round
 display.countdown = function () {
-	var popUp = $('<div class="pop-up">'); //Covers playing board
+	var popUp = $('<div>').addClass("pop-up"); //Covers playing board
 	popUp.append( $('<h2>').text("Are you ready " + game.currentPlayer.name + "?") );
 	this.map.prepend(popUp); //Prepend to make sure it is at the top of the flow and covers everything
 
 	function count() { //changes the number every second
 
-		var number = $('<div id="countdown">');
+		var number = $('<div>').attr('id',"countdown");
 		popUp.append(number);
 		var i = 3;
 		var counter = setInterval(function () {
       if (i === 0) {
 				clearInterval(counter);
 				popUp.remove();
-				return game.start();
+				game.start();
 			}
+
 			number.text(i--).css('opacity', 1);
 			number.animate({opacity: 0}, 600);
-
 		}, 1000);
 	}
 
 	setTimeout(count, 1500); //Does this all after seeing the new screen for a moment
 };
 
-display.changePlayer = function() {
-  $('.player-' + game.currentPlayer.id).parent().removeClass('dorange'); //Un-highlight player at start of round
-  var newPlayer = game.nextPlayer();
+display.changePlayer = function(newPlayer) {
+  $('.dorange').removeClass('dorange'); //Un-highlight previous player
   $('.player-' + newPlayer.id).parent().addClass('dorange'); //Highlight next player
 
   if (newPlayer.id === 0) { //When we're back to the top of the player list...
-		return game.changeLevel();
+		return game.nextLevel();
 	}
 
   console.log("Now playing..." + newPlayer.name);
-	display.countdown(); //(After if...) Otherwise, start up the game for the new player.
-}
+	this.countdown(); //(After if...) Otherwise, start up the game for the new player.
+};
 
 display.startLevel = function (level) {
-  $('#scoreboard-title').text("Level " + level.id);
+  this.scoreboardTitle.text("Level " + level.id);
   console.log("Now for level " + level.id);
-  console.log("Now playing..." + this.currentPlayer.name);
-  display.setBoard(level); //(After if...) Otherwise, swap out the grid for the new level.
-  display.countdown(); //Start up the next round.
-}
+  console.log("Now playing..." + game.currentPlayer.name);
+  this.setBoard(level); //(After if...) Otherwise, swap out the grid for the new level.
+  this.countdown(); //Start up the next round.
+};
 
 //Sets a cell to be active to hit for limited time
-display.showHitPiece = function () {
-	var randCell = game.randomPassiveCell();
+display.showHitPiece = function (cell) {
 	var image = $('<img>').attr('src', "images/avocado.gif?" + Date.now());
-	randCell.removeClass('passive').addClass('active').append(image); //Change state of cell to .active for hit.
+	cell.removeClass('passive').addClass('active').append(image); //Change state of cell to .active for hit.
 
 	setTimeout(function () {  //length of time cell is active before it becomes passive again
-		randCell.removeClass('active red-bg').addClass('passive');
+		cell.removeClass('active red-bg').addClass('passive');
 		image.remove();
 	}, game.currentLevel.showLength);//Grabs the length of time piece is shown for this level.
 };
 
 display.successfulHit = function(target) {
-  $('.player-' + this.currentPlayer.id).text(this.currentPlayer.score);
-  console.log(this.currentPlayer.score);
+  $('.player-' + game.currentPlayer.id).text(game.currentPlayer.score);
+  console.log(game.currentPlayer.score);
   //Make inactive to avoid multiple hits, and allow hit styling
   //Change color for a moment, and then make cell passive again
   target.removeClass('active').text("").addClass('hit');
@@ -130,37 +173,26 @@ display.successfulHit = function(target) {
   setTimeout(function () {
     target.removeClass('hit').addClass('passive');
   }, 500);
-}
+};
 
 display.recap = function (playerList) {
-	var fullScreen = $('<div class="full-screen orange-bg">').css('top', '200vh');
+	var fullScreen = $('<div>').addClass("full-screen orange-bg").css('top', '200vh');
 
-	var	finalScore;
-	$('body').append(fullScreen);
-	fullScreen.append('<h1>Results...</h1>');
+	fullScreen.append($('<h1>').text('Results...'));
+  $('body').append(fullScreen); 
 	fullScreen.animate({top: "0vh"}, 600);
 
-	for (var i = 0; i < game.playerList.length; i++) {
-		//Shows all players and their game scores
-		var rapSheet = $('<section>').addClass('rap-sheet').css({
-			width: 100 / playerList.length + "%" //Makes sure all players fit across
-		});
-		rapSheet.append(playerList[i].name);
-		fullScreen.append(rapSheet);
-		rapSheet.append(score);
+  //Shows all players and their game scores
+	playerList.forEach(function(player, i) {
+		var rapSheet = $('<section>').addClass('rap-sheet')
+    .css({ width: 100 / playerList.length + "%" }) //Makes sure all players fit across page
+		.append(player.name, playerList.score,
+      $('<div>').text('Accuracy bonus: ' + player.accuracy), $('<div>').text('Completion bonus: ' + player.completion),
+      $('<div>').addClass('final-score').html('Final Score:<br><strong> ' + player.finalScore + ' </strong>')
+    );
 
-		rapSheet.append('<div>Accuracy bonus: ' + accuracy + '</div>');
+		if (game.winner === player) rapSheet.addClass('winner');
 
-		rapSheet.append('<div>Completion bonus: ' + completion + '</div>');
-
-		//Compares totals
-		if (!this.winner || //If winner is still null...
-			playerList[i].score > this.winner.score) { //...or this player's score is higher than the current winner's
-			this.winner = playerList[i];
-		}
-
-		finalScore = $('<div>Final Score:<br><strong> ' + playerList[i].score + ' </strong></div>').addClass('final-score');
-		rapSheet.append(finalScore);
-
-	}
-}
+    fullScreen.append(rapSheet);
+	});
+};

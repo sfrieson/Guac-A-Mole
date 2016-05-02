@@ -14,14 +14,14 @@ var Player = (function (){
 
 
 	// What happens when player swings
-Player.prototype.swing = function (target) {
+Player.prototype.swing = function (e) {
 	this.swings++; //Count every swing.
 	console.log("Swing " + this.swings);
 
-	if (target.hasAttribute('src')) {// If the swing was a hit (because they clicked an img that only shows for active divs)
+	if (e.target.hasAttribute('src')) {// If the swing was a hit (because they clicked an img that only shows for active divs)
 		this.hits++;
 		game.hit();
-		display.successfulHit( $(target.parentElement) );
+		display.successfulHit( $(e.target.parentElement) );
 	}
 };
 

@@ -1,2 +1,2 @@
 var game = new Game();
-$(document).ready(game.preGame.bind(game));
+$(document).ready(display.title.bind(display));
