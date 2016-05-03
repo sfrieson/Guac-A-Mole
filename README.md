@@ -1,5 +1,8 @@
-# Guac-a-Mole
+![Guac-a-Mole](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/title.png)
 *A punny play on the classic game*
+***
+
+
 
 ## Requirements
 Make a 1- or 2-player, responsive, in-browser game, taking advantage of semantic markup available in HTML.  Using JS or jQuery for DOM manipulation, design and implement logic for winning, and visually display which player won.  Be sure to adhere to KISS and DRY principals.
@@ -16,14 +19,18 @@ The game is a is extendable up to as many players as you want.  I put 4 because 
 ### Act I. Introduction
 The is an intro phase where the play inputs their name or default names are given to them.  When Let's play is hit, JavaScript grabs all of the names and creates a variable from the Player constructor function for them.  This in turn launches the game
 
+![](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/form.png)
+
 ### Act II. The Game
 
 The game then has three levels, and each player plays the level before everyone moves on to the next.  Each level, the pieces pop up more frequently and stay up for a shorter amount of time.
 
-
+![](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/game-play.png)
 
 ### Act III. Comparison
 At the end of the game, each players score is shown.  They then get bonus points for their swinging accuracy (hits/total swings), and for game completion (total hits/possible hits)
+
+![](https://raw.githubusercontent.com/sfrieson/Guac-A-Mole/master/images/screenshots/results.png)
 
 ## The Logic
 
@@ -105,6 +112,12 @@ I had two other improvements that I had partially working, but time forced me to
 The first would have the players score count up from zero to it's appropriate score, and the other would add in the bonus points one bonus section at a time per character.  These both would add more suspense in figuring out who won.  
 
 I got each of these to work for one character, but because loops happen so quickly, I ran into some other problems as I tried with multiple players.
+
+***
+
+The game practically doesn't work at all on mobile.  Maybe there is on touch event?
+
+Also with the cursor sometime the divs get highlighted as if they were text.  There is likely a way to stop this from happening.
 
 ## Thank You
 
