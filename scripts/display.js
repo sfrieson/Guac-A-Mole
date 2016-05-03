@@ -1,59 +1,65 @@
 var display = {};
+$(function(){
+  //Right side of the board
+  display.map = $('<section>').attr('id',"map");
+  display.body = $('body');
+})
 
-//Right side of the board
-display.map = $('<section>').attr('id',"map");
 
 //Title Screen
 display.title = function () {
-  var body = $('body');
 	var title = $('<section>').attr('id',"title").addClass("full-screen yellow-bg");
 	var text = $('<h1>').addClass("green").text('Guac-a-Mole');
 	title.append(text);
-	body.append(title);
+	display.body.append(title);
 
 	text.animate({fontSize: "18vh"}, 700, 'swing',
-		function () {setTimeout(function(){display.getNumberOfPlayers(body, title);}, 1000);}
+		function () {setTimeout(function(){display.getNumberOfPlayers(function(){
+      title.animate({left: "-200vw"}, 400, 'swing', function () {title.remove();} );
+    });}, 1000);}
 	);
 };
 
 //Gets input on number of players and their names
-display.getNumberOfPlayers = function (body, titlePage) {
+display.getNumberOfPlayers = function (hideTitle) {
 	//Set-up the page
 	var getPlayers = $('<section>').attr('id',"get-players");
-
 	var numberPicker = $('<div>').addClass("full-screen green-bg");
+  
 	numberPicker.append( $('<h1>').text("How many players?") );
 	for (i = 1; i <= game.maxPlayers; i++) {
 		numberPicker.append( $('<button>').addClass('red-bg').text(i) );
 	}
 
 	getPlayers.append( numberPicker );
-	body.prepend(getPlayers); //Add behind title
-	title.animate({left: "-200vw"}, 400, 'swing', function () {this.remove();} ); //Animate title off screen and remove it.
+	display.body.prepend(getPlayers); //Add behind title
+  hideTitle(); //Animate title off screen and remove it.
 
-	getPlayers.on('click', 'button', function(e){ display.getNames(e.target.innerText); });
+	getPlayers.on('click', 'button', function(e){
+    display.getNamesofPlayers(numberPicker, e.target.innerText);
+  });
 };
 
-display.getNames = function(numOfPlayers) {
+display.getNamesofPlayers = function(getNames, numOfPlayers) {
   $('h1').text("Player names:");
   $('button').remove();
-  var form = $('<form>'),
-  getNames = $('section#get-players div.green-bg');
+  var form = $('<form>');
 
   for (var i = 1; i <= numOfPlayers; i++) {
-    var formInput = $('<div>').addClass("player-input-section");
-    formInput.append(
-      $('<label>').attr('for', 'Player ' + i).html($('<h2>').text('Player ' + i)),
+    var formInput = $('<div>').addClass("player-input-section").append(
+      $('<label>').attr('for', 'Player ' + i).html( $('<h2>').text('Player ' + i) ),
       $('<input>').attr('type', 'text')
     );
     form.append(formInput);
-    if(i === 0); formInput.focus();
+    // if(i === 0); formInput.focus();
   }
   form.append(
     $('<button>').attr('id',"play").addClass("button orange-bg").text("Let\'s go!")
   );
+
   getNames.append(form);
-  form.submit(function () {
+  form.on("click", "button", function (e) {
+    e.preventDefault();
     game.makePlayers($('input'));
     display.run();
   });
@@ -62,27 +68,29 @@ display.getNames = function(numOfPlayers) {
 //Runs the game
 display.run = function () {//The flow for a game.  Called once per game.
   //Initialize document.body This all only happens once.
-  $('body').empty() //Remove Act I title screens or previous game (play again).
+  display.body.empty() //Remove Act I title screens or previous game (play again).
   .append(
     $('<main>').append( $('<div>').attr('id',"game") )
   );
-  //TODO: Clean this section up a bit.
+
   game.currentPlayer = game.playerList[0];
+
   display.setScoreboard();//Set scoreboard
   $('.player-' + game.currentPlayer.id).parent().addClass('dorange'); //Highlights the first player up (only necessary first time)
-  display.setBoard(game.currentLevel); //Set playing board
-  display.countdown(); //Starts level countdown
+
+  game.nextLevel();
 };
 
 //Sets up the board for the beginning of each level
 display.setBoard = function (level) {
   var	grid = $('<div>').attr('id', 'grid-' + level.grid); //make the grid div with size setting in ID
-
-  for (var i = 0; i < level.pieces; i++) {
-    grid.append( $('<div>').addClass('passive cell-' + level.grid) ); //Adds one new piece to the grid
+  for (var i = 0; i < level.cells.length; i++) {
+    cell = level.cells[i];
+    cell.view = $('<div>').addClass('passive cell-' + level.grid);
+    grid.append( cell.view ); //Adds one new piece to the grid
   }
 
-  grid.mousedown(game.currentPlayer.swing);
+  grid.mousedown(game.currentPlayer.swing.bind(game.currentPlayer));
 
   this.map.html(grid); //replace with the grid
   $('#game').append(this.map);
@@ -144,28 +152,34 @@ display.changePlayer = function(newPlayer) {
 	this.countdown(); //(After if...) Otherwise, start up the game for the new player.
 };
 
-display.startLevel = function (level) {
+display.preLevel = function (level) {
   this.scoreboardTitle.text("Level " + level.id);
   console.log("Now for level " + level.id);
   console.log("Now playing..." + game.currentPlayer.name);
-  this.setBoard(level); //(After if...) Otherwise, swap out the grid for the new level.
-  this.countdown(); //Start up the next round.
+
+  this.setBoard(level); //Set playing board
+  this.countdown(); //Starts level countdown
 };
 
 //Sets a cell to be active to hit for limited time
 display.showHitPiece = function (cell) {
-	var image = $('<img>').attr('src', "images/avocado.gif?" + Date.now());
-	cell.removeClass('passive').addClass('active').append(image); //Change state of cell to .active for hit.
+  cell.img = $('<img>').attr('src', "images/avocado.gif?" + Date.now());
+	cell.view.removeClass('passive').addClass('active').append(cell.img);
 
-	setTimeout(function () {  //length of time cell is active before it becomes passive again
-		cell.removeClass('active red-bg').addClass('passive');
-		image.remove();
-	}, game.currentLevel.showLength);//Grabs the length of time piece is shown for this level.
+	setTimeout(function () {
+		display.hideHitPiece(cell);
+	}, game.currentLevel.showLength);//length of time cell is active before it becomes passive again
+};
+
+display.hideHitPiece = function (cell) {
+
+  cell.view.removeClass('active red-bg').addClass('passive');
+  cell.img.remove();
+  cell.makePassive();
 };
 
 display.successfulHit = function(target) {
   $('.player-' + game.currentPlayer.id).text(game.currentPlayer.score);
-  console.log(game.currentPlayer.score);
   //Make inactive to avoid multiple hits, and allow hit styling
   //Change color for a moment, and then make cell passive again
   target.removeClass('active').text("").addClass('hit');
@@ -179,7 +193,7 @@ display.recap = function (playerList) {
 	var fullScreen = $('<div>').addClass("full-screen orange-bg").css('top', '200vh');
 
 	fullScreen.append($('<h1>').text('Results...'));
-  $('body').append(fullScreen); 
+  $('body').append(fullScreen);
 	fullScreen.animate({top: "0vh"}, 600);
 
   //Shows all players and their game scores

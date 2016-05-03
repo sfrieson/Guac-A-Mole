@@ -19,6 +19,7 @@ Player.prototype.swing = function (e) {
 	console.log("Swing " + this.swings);
 
 	if (e.target.hasAttribute('src')) {// If the swing was a hit (because they clicked an img that only shows for active divs)
+		console.log("hit");
 		this.hits++;
 		game.hit();
 		display.successfulHit( $(e.target.parentElement) );

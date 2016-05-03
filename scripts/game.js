@@ -6,40 +6,6 @@ var Game = function () {
 	this.maxPlayers = 4;
 };
 
-//Data for how many pieces go on each level and how they should be styled.
-Game.prototype.levelData = [
-	{id: 1, pieces: 6, grid: '3x2', speedFactor: 1050, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1
-	{id: 2, pieces: 9, grid: '3x3', speedFactor: 450, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2
-	{id: 3, pieces: 12, grid: '4x3', speedFactor: 350, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3
-];
-
-	//Changes the player before the start of each round
-Game.prototype.nextPlayer = (function () {
-	var currentIndex = 0;
-	return function(){
-		//Iterate through the players but only as high as the number of players
-		currentIndex = (currentIndex + 1) % this.playerList.length;
-		display.changePlayer(this.currentPlayer = this.playerList[currentIndex]);
-	};
-})();
-
-//Changes the level after each player has played it
-Game.prototype.nextLevel = (function () {
-	var levelIndex = 0;
-	return function(){
-		if (++levelIndex === this.levelData.length) this.results(); //On to the end of the game
-	  else {
-			display.startLevel( this.currentLevel = this.levelData[levelIndex] );
-		}
-	};
-})();
-
-//Sets a cell to be active to hit for limited time
-Game.prototype.randomPassiveCell = function () {
-	var randCell = $passiveCells.eq( Math.floor(  Math.random() * $('.passive').length  ) );
-	display.showHitPiece(randCell);
-};
-
 Game.prototype.hit = function (target) {
 	this.currentPlayer.score += this.currentLevel.pointValue;
 };
@@ -52,20 +18,20 @@ Game.prototype.start = function () {
 	var interval = setInterval(function () { //Like a for loop
 		if (!hitPiecesRemaining) {
 			clearInterval(interval);//Stop loop when no more pieces are remaining
-			setTimeout(game.nextPlayer, 3000); //Pauses before going to next player
+			setTimeout(game.currentLevel.nextPlayer.bind(game), 3000); //Pauses before going to next player
 		}
-		game.randomPassiveCell(); //Each interval pick a hit piece
+		game.currentLevel.randomPassiveCell(); //Each interval pick a hit piece
 		hitPiecesRemaining--;
 	}, this.currentLevel.speedFactor); //How often pieces show on this level
 };
 
 // Creates players and populates the playerList[];
-Game.prototype.makePlayers = function (playerInput) {
-	playerInput.forEach(function(input, i){
-		this.playerlist.push(
+Game.prototype.makePlayers = function ($playerInput) {
+	$playerInput.each(function(i, input){
+		this.playerList.push(
 			new Player(input.value || "Player " + (i+1))//name or default name
 		);
-	});
+	}.bind(this));
 };
 
 //Compiles how player(s) did at the end of game
@@ -83,4 +49,77 @@ Game.prototype.results = function () {
 	}.bind(this));
 
 	return display.recap(this.playerList);
+};
+
+//Data for how many pieces go on each level and how they should be styled.
+Game.prototype.levelData = [
+	{id: 1, pieces: 6, gridWidth: 3, gridHeight: 2, speedFactor: 1050, showLength: 2000, maxHitPieces: 5, pointValue: 1}, //Level 1
+	{id: 2, pieces: 9, gridWidth: 3, gridHeight: 3, speedFactor: 450, showLength: 1000, maxHitPieces: 15, pointValue: 5}, //Level 2
+	{id: 3, pieces: 12, gridWidth: 4, gridHeight: 3, speedFactor: 350, showLength: 700, maxHitPieces: 25, pointValue: 10} //Level 3
+];
+
+//Changes the level after each player has played it
+Game.prototype.nextLevel = (function () {
+	var levelIndex = 0;
+	return function(){
+		if (levelIndex === this.levelData.length) this.results(); //On to the end of the game
+	  else {
+			display.preLevel( new this.Level( this, game.levelData[levelIndex++] ));
+		}
+	};
+})();
+
+
+
+// Constructor for each level of the game.
+var Level = Game.prototype.Level = function(game, opt) {
+	game.currentLevel = this; //Current level autamtically set to this upon creation
+	this.id = opt.id;
+	this.pieces = opt.pieces;
+	this.gridHeight = opt.gridHeight;
+	this.gridWidth = opt.gridWidth;
+	this.grid = opt.gridWidth + "x" + opt.gridHeight;
+	this.speedFactor = opt.speedFactor;
+	this.showLength = opt.showLength;
+	this.maxHitPieces = opt.maxHitPieces;
+	this.pointValue = opt.pointValue;
+
+	this.cells = [];
+	this.passiveCells = [];
+
+	//Create Cells for this level
+	for(var x = 0; x < this.gridWidth; x++){
+		for(var y = 0; y < this.gridHeight; y++){
+			new this.Cell(this, x, y);
+		}
+	}
+};
+
+//Sets a cell to be active to hit for limited time
+Level.prototype.randomPassiveCell = function () {
+	var index = Math.floor(  Math.random() * game.currentLevel.passiveCells.length );
+	display.showHitPiece(game.currentLevel.passiveCells.splice(index, 1)[0]);
+};
+
+	//Changes the player before the start of each round
+Level.prototype.nextPlayer = (function () {
+	var currentIndex = 0;
+	return function(){
+		//Iterate through the players but only as high as the number of players
+		currentIndex = (currentIndex + 1) % this.playerList.length;
+		display.changePlayer(this.currentPlayer = this.playerList[currentIndex]);
+	};
+})();
+
+
+
+var Cell = Level.prototype.Cell = function(level, x, y){
+	level.cells.push(this);
+	level.passiveCells.push(this);
+	this.x=x;
+	this.y=y;
+};
+
+Cell.prototype.makePassive = function () {
+	game.currentLevel.passiveCells.push(this);
 };
